@@ -1,0 +1,28 @@
+<?php
+// Zabbix GUI configuration file
+
+/*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !!! This file is managed by Puppet         !!!
+ * !!! All manual changes will be overwritten !!!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+
+global $DB;
+
+$DB['TYPE']     = '<%= @dbdriver %>';
+$DB['SERVER']   = '<%= @dbhost %>';
+$DB['PORT']     = '<%= @dbport %>';
+$DB['DATABASE'] = '<%= @dbname %>';
+$DB['USER']     = '<%= @dbuser %>';
+$DB['PASSWORD'] = '<%= @dbpasswd %>';
+
+// SCHEMA is relevant only for IBM_DB2 database
+$DB['SCHEMA'] = '<%= @dbschema %>';
+
+$ZBX_SERVER      = '<%= @server %>';
+$ZBX_SERVER_PORT = '<%= @server_port %>';
+$ZBX_SERVER_NAME = '<%= @server_name %>';
+
+$IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
+?>

@@ -1,0 +1,22 @@
+{
+  "name": "zabbix",
+  "version": "0.1.0",
+  "author": "Ryan Armstrong <ryan@cavaliercoder.com>",
+  "license": "MIT License",
+  "summary": "Puppet module for managing Zabbix resources",
+  "project_page": "https://github.com/cavaliercoder/puppet-zabbix",
+  "source": "https://github.com/cavaliercoder/puppet-zabbix",
+  "tags": ["zabbix"],
+  "requirements" : [
+    { "name": "pe", "version_requirement": ">= 3.x" },
+    { "name": "puppet", "version_requirement": ">= 2.7" }
+  ],
+  "operatingsystem_support": [
+    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7.0" ] },
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">=4.5.0" },
+    { "name": "puppetlabs/postgresql", "version_requirement": ">=4.3.0" },
+    { "name": "puppetlabs/apache", "version_requirement": ">=1.5.0" }
+  ]
+}

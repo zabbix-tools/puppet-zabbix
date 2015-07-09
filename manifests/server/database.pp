@@ -78,7 +78,6 @@ class zabbix::server::database (
           onlyif      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT COUNT(*) FROM hosts;\" | grep '^0$'",
           environment => $db_env,
         }
-
       }
     }
 

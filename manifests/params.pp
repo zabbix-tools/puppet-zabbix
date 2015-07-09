@@ -77,4 +77,16 @@ class zabbix::params inherits zabbix::globals {
   $ldap_bind_pwd = undef
   $ldap_user = undef
   $ldap_search_att = 'sAMAccountName'
+
+  # agent
+  $agent_package = 'zabbix-agent'
+  $agent_service = 'zabbix-agent'  
+  $agent_user    = $server_user
+  $agent_group   = $server_group
+
+  # agent config
+  $agent_config_file = '/etc/zabbix/zabbix_agentd.conf'
+  $agent_config_owner = 'root'
+  $agent_config_group = 'root'
+  $agent_config_mode = '0644'
 }

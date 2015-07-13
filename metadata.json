@@ -1,11 +1,11 @@
 {
-  "name": "zabbix",
+  "name": "cavaliercoder-zabbix",
   "version": "0.1.0",
   "author": "Ryan Armstrong <ryan@cavaliercoder.com>",
   "license": "MIT License",
   "summary": "Puppet module for managing Zabbix resources",
   "project_page": "https://github.com/cavaliercoder/puppet-zabbix",
-  "source": "https://github.com/cavaliercoder/puppet-zabbix",
+  "source": "https://github.com/cavaliercoder/puppet-zabbix.git",
   "tags": ["zabbix"],
   "requirements" : [
     { "name": "pe", "version_requirement": ">= 3.x" },

@@ -14,7 +14,6 @@
 # Mandatory: no
 # Default:
 # PidFile=/tmp/zabbix_agentd.pid
-
 PidFile=<%= @pid_file %>
 
 ### Option: LogFile
@@ -24,7 +23,6 @@ PidFile=<%= @pid_file %>
 # Mandatory: no
 # Default:
 # LogFile=
-
 LogFile=<%= @log_file %>
 
 ### Option: LogFileSize
@@ -35,7 +33,6 @@ LogFile=<%= @log_file %>
 # Range: 0-1024
 # Default:
 # LogFileSize=1
-
 LogFileSize=<%= @log_file_size %>
 
 ### Option: DebugLevel
@@ -93,7 +90,7 @@ LogRemoteCommands=<%= @log_remote_commands %>
 # Default:
 # Server=
 
-Server=<@= @servers.join(',') %>
+Server=<%= @servers.join(',') %>
 
 ### Option: ListenPort
 #	Agent will listen on this port for connections from the server.
@@ -186,7 +183,7 @@ HostMetadata=<%= @host_metadata %>
 # Default:
 # HostMetadataItem=
 <% if @host_metadata_item -%>
-HostMetadataItem=<%= @hsot_metadata_item %>
+HostMetadataItem=<%= @host_metadata_item %>
 <% end -%>
 
 ### Option: RefreshActiveChecks

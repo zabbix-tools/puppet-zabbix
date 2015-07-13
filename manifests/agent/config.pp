@@ -55,7 +55,7 @@ class zabbix::agent::config (
 
   case $ensure {
     'present' : {
-      # install agent first so config is not overwritten
+      # install agent first so config is not overwritten by agent package
       require zabbix::agent
 
       # create config file from template

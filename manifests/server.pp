@@ -1,12 +1,12 @@
 class zabbix::server (
-  $ensure = 'present',
-  $version = $::zabbix::params::version,
-
-  $user = $::zabbix::params::server_user,
-  $group = $::zabbix::params::server_group,
-    
-  $dbengine = $::zabbix::params::dbengine,
-  $manage_db = false,
+  $ensure         = 'present',
+  $version        = $::zabbix::params::version,
+  $user           = $::zabbix::params::server_user,
+  $group          = $::zabbix::params::server_group,
+  $dbengine       = $::zabbix::params::dbengine,
+  $manage_db      = false,
+  $manage_repo    = $::zabbix::params::manage_repo,
+  $manage_service = true,
 ) inherits zabbix::params {
   # OS specific imlementations
   if $::osfamily != 'RedHat' {
@@ -23,7 +23,10 @@ class zabbix::server (
   case $ensure {
     # Install Zabbix server
     'present': {
-      require ::zabbix::repo
+      # install package repo
+      if $manage_repo {
+        require ::zabbix::repo
+      }
 
       # Server package
       package { $server_packages :
@@ -32,8 +35,10 @@ class zabbix::server (
       }
 
       # Start Zabbix Server
-      class { '::zabbix::server::service' : 
-        require => Package[$server_packages],
+      if $manage_service {
+        class { '::zabbix::server::service' : 
+          require => Package[$server_packages],
+        }
       }
 
       # Install PostgreSQL schema

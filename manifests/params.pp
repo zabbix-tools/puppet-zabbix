@@ -20,6 +20,7 @@ class zabbix::params inherits zabbix::globals {
   $package_version = "${ver_major}.${ver_minor}.${ver_patch}-${ver_release}.el${distrelease}"
 
   # yum repo
+  $manage_repo = pick($manage_repo, true)
   $repo_url = pick($repo_url, "http://repo.zabbix.com/zabbix/${repo_version}/rhel/${distrelease}/${architecture}/")
   $ns_repo_url = pick($ns_repo_url, "http://repo.zabbix.com/non-supported/rhel/${distrelease}/${architecture}/")
   $repo_gpgkey = pick($repo_gpgkey, 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX')

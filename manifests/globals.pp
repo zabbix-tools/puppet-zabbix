@@ -14,7 +14,8 @@ class zabbix::globals (
   $dbadmin = undef,
   $dbadmin_password = undef,
   $dbadmin_db = undef,
-  
+
+  $manage_repo = undef,  
   $repo_url = undef,
   $ns_repo_url = undef,
   $repo_gpgkey = undef,

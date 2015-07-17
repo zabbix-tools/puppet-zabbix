@@ -56,6 +56,8 @@ class zabbix::webserver (
       if $manage_apache {
         class { '::zabbix::webserver::apache' :
           require => Package[$prereqs],
+          user    => $user,
+          group   => $group,
         }
       }
 

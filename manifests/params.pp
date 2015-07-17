@@ -61,6 +61,7 @@ class zabbix::params inherits zabbix::globals {
   $timezone = pick($timezone, 'Australia/Perth')
   $http_port = 80
   $docroot = '/usr/share/zabbix'
+  $docroot_mode = '0755'
 
   case $dbengine {
     'pgsql': {

@@ -1,8 +1,13 @@
 class zabbix::webserver::apache (
   $ensure = 'present',
+
   $http_port = $::zabbix::params::http_port,
   $docroot = $::zabbix::params::docroot,
   $vhost_priority = false,
+
+  $user = $::zabbix::params::web_user,
+  $group = $::zabbix::params::web_group,
+  $mode  = $::zabbix::params::docroot_mode,
 
   $timezone = $::zabbix::params::timezone,
 
@@ -30,10 +35,13 @@ class zabbix::webserver::apache (
 
       # configure Zabbix VHost
       apache::vhost { 'zabbix':
-        port        => $http_port,
-        docroot     => $docroot,
-        priority    => $vhost_priority,
-        directories => [
+        port          => $http_port,
+        docroot       => $docroot,
+        docroot_owner => $user,
+        docroot_group => $group,
+        docroot_mode  => $mode,
+        priority      => $vhost_priority,
+        directories   => [
           {
             path       => $docroot,
             require    => 'all granted',

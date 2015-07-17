@@ -9,7 +9,7 @@ class zabbix::params inherits zabbix::globals {
   }
 
   # version
-  $version = pick($version, '2.2.9')
+  $version = pick($version, '2.4.5')
   $version_parts = split($version, '[.]')
   $ver_major = $version_parts[0]
   $ver_minor = $version_parts[1]

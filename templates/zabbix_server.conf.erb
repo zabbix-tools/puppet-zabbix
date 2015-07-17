@@ -9,6 +9,7 @@
 
 ############ GENERAL PARAMETERS #################
 
+<% if scope.function_versioncmp([@version, '2.4.0']) < 0 %>
 ### Option: NodeID
 #	Unique NodeID in distributed setup.
 #	0 - standalone server
@@ -19,6 +20,7 @@
 # NodeID=0
 NodeID=<%= @node_id %>
 
+<% end %>
 ### Option: ListenPort
 #	Listen port for trapper.
 #
@@ -293,6 +295,7 @@ VMwareCacheSize=<%= @vmware_cache_size %>
 # VMwareTimeout=10
 VMwareTimeout=<%= @vmware_timeout %>
 
+<% if scope.function_versioncmp([@version, '2.2.7']) >= 0 && scope.function_versioncmp([@version, '2.4.0']) < 0 %>
 ### Option: EnableSNMPBulkRequests
 #	Enable or disable SNMP bulk requests.
 #	0 - disable
@@ -303,6 +306,7 @@ VMwareTimeout=<%= @vmware_timeout %>
 # EnableSNMPBulkRequests=1
 EnableSNMPBulkRequests=<%= @enable_snmp_bulk_requests %>
 
+<% end %>
 ### Option: SNMPTrapperFile
 #	Temporary file used for passing data from SNMP trap daemon to the server.
 #	Must be the same as in zabbix_trap_receiver.pl or SNMPTT configuration file.
@@ -434,6 +438,7 @@ HistoryTextCacheSize=<%= @history_text_cache_size %>
 # ValueCacheSize=8M
 ValueCacheSize=<%= @value_cache_size %>
 
+<% if scope.function_versioncmp([@version, '2.4.0']) < 0 %>
 ### Option: NodeNoEvents
 #	If set to '1' local events won't be sent to master node.
 #	This won't impact ability of this node to propagate events from its child nodes.
@@ -454,6 +459,7 @@ NodeNoEvents=<%= @node_no_events %>
 # NodeNoHistory=0
 NodeNoHistory=<%= @node_no_history %>
 
+<% end %>
 ### Option: Timeout
 #	Specifies how long we wait for agent, SNMP device or external check (in seconds).
 #

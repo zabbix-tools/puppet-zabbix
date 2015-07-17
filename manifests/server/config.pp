@@ -1,10 +1,12 @@
 class zabbix::server::config (
   $ensure = 'present',
+  
   $config_file = $::zabbix::params::server_config_file,
   $user = $::zabbix::params::server_config_owner,
   $group = $::zabbix::params::server_config_group,
   $mode = $::zabbix::params::server_config_mode,
-  $version = $::zabbix::params::repo_version,
+  
+  $version   = $::zabbix::params::version,
 
   $dbhost = $::zabbix::params::dbhost,
   $dbschema = $::zabbix::params::dbschema,

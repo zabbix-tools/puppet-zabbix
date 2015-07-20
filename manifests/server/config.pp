@@ -25,7 +25,7 @@ class zabbix::server::config (
   $dbsocket = '/var/lib/mysql/mysql.sock',
   $debug_level = 3,
   $enable_snmp_bulk_requests = 1,
-  $external_scripts = '/usr/lib/zabbix/externalscripts',
+  $external_scripts_path = '/usr/lib/zabbix/externalscripts',
   $fping6_location = '/usr/sbin/fping6',
   $fping_location = '/usr/sbin/fping',
   $history_cache_size = '8M',

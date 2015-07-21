@@ -42,16 +42,11 @@ class zabbix::agent::config (
   }
 
   # ensure Hostname and HostnameItem are mutually exclusive
-  if $hostname and $hostname_item {
-    fail("Fields 'hostname' and 'hostname_item' are mutually exclusive.")
-  }
-
   if $hostname {
     $_hostname_item = undef
   } else {
     $_hostname_item = $hostname_item
   }
-
 
   case $ensure {
     'present' : {

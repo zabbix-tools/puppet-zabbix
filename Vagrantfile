@@ -36,7 +36,7 @@ script
 
 # Vagrant condiguration
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "chef/centos-7.0"
+  config.vm.box = "doe/centos-7.0"
   config.vm.network "forwarded_port", guest: 80, host: 8008
   config.vm.provision "shell", inline: $script
 end

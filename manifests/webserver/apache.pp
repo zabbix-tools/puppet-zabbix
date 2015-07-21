@@ -20,6 +20,9 @@ class zabbix::webserver::apache (
 
   case $ensure {
     'present' : {
+      # prevent php muddling the managed apache config after it is installed
+      require ::zabbix::webserver::php
+      
       # install apache
       class { '::apache' :
         default_mods        => false,

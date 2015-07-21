@@ -47,10 +47,6 @@ class zabbix::webserver (
 
       # Install Apache HTTP server
       if $manage_apache {
-        # prevent php muddling the managed apache config after it is installed
-        class { '::zabbix::webserver::php' : } ->
-
-        # install web server
         class { '::zabbix::webserver::apache' :
           user    => $user,
           group   => $group,

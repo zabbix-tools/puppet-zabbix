@@ -1,6 +1,7 @@
 class zabbix::webserver (
   $ensure = 'present',
   $version = $::zabbix::params::version,
+  $package = $::zabbix::params::web_package,
 
   $dbengine = $::zabbix::params::dbengine,
   $dbdriver = $::zabbix::params::web_db_driver,
@@ -28,8 +29,6 @@ class zabbix::webserver (
     fail("Unsupported operating system: ${::osfamily}")
   }
   
-  $webserver_package = 'zabbix-web'
-  $prereqs = [ 'php', 'php-common', 'php-pgsql', 'php-mbstring', 'php-bcmath', 'php-ldap', 'php-xml', 'php-gd' ]
 
   case $ensure {
     'present' : {
@@ -41,21 +40,18 @@ class zabbix::webserver (
       require ::zabbix::repo
 
       # Install web server package
-      package { $webserver_package :
-        ensure        => 'present',
-        allow_virtual => false,
-      }
-
-      # prereqs
-      package { $prereqs :
+      package { $package :
         ensure        => 'present',
         allow_virtual => false,
       }
 
       # Install Apache HTTP server
       if $manage_apache {
+        # prevent php muddling the managed apache config after it is installed
+        class { '::zabbix::webserver::php' : } ->
+
+        # install web server
         class { '::zabbix::webserver::apache' :
-          require => Package[$prereqs],
           user    => $user,
           group   => $group,
         }
@@ -68,17 +64,12 @@ class zabbix::webserver (
         owner   => $user,
         group   => $group,
         mode    => $config_file_mode,
-        require => Package[$webserver_package],
+        require => Package[$package],
       }
     }
 
     'absent' : {
-      package { $webserver_package :
-        ensure => 'purged',
-        allow_virtual => false,
-      }
-
-      package { $prereqs :
+      package { $package :
         ensure => 'purged',
         allow_virtual => false,
       }
@@ -90,7 +81,11 @@ class zabbix::webserver (
       if $manage_apache {
         class { '::zabbix::webserver::apache' :
           ensure  => 'absent',
-          require => Package[$webserver_package],
+          require => Package[$package],
+        }
+
+        class { '::zabbix::webserver::php' : 
+          ensure => 'purged',
         }
       }
     }

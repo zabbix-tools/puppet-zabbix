@@ -54,6 +54,7 @@ class zabbix::params inherits zabbix::globals {
   $server_config_mode = '0640'
 
   # web server common
+  $web_package = 'zabbix-web'
   $web_config_file = '/etc/zabbix/web/zabbix.conf.php'
   $web_config_file_mode = '640'
   $web_user = 'apache'

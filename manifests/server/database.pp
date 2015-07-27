@@ -13,6 +13,7 @@ class zabbix::server::database (
   
   $pgscripts = $::zabbix::params::pgscripts,
 
+  $create_schema = true,
   $load_sample_data = true,
 ) {
 
@@ -58,26 +59,31 @@ class zabbix::server::database (
         command     => "${client_bin} -h ${dbhost} -U ${dbadmin} -d ${dbadmin_db} -c \"CREATE DATABASE \\\"${dbname}\\\" WITH OWNER \\\"${dbuser}\\\" TEMPLATE \\\"template1\\\";\"",
         unless      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT 'true' FROM pg_database WHERE datname='${dbname}';\" | grep '^true$'",
         environment => $dbadmin_env,
-      } ->
-      exec { 'create zabbix database schema' :
-        command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/schema.sql",
-        unless      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT table_name FROM information_schema.tables WHERE table_name='hosts' AND table_schema='${dbschema}'\" | grep '^hosts$'",
-        environment => $db_env,
       }
 
-      # load sample data
-      if $load_sample_data {
-        exec { 'load sample data images' :
-          command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/images.sql",
-          onlyif      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT COUNT(*) FROM images;\" | grep '^0$'",
+      # create database schema
+      if $create_schema {
+        exec { 'create zabbix database schema' :
+          command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/schema.sql",
+          unless      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT table_name FROM information_schema.tables WHERE table_name='hosts' AND table_schema='${dbschema}'\" | grep '^hosts$'",
           environment => $db_env,
-          require     => Exec['create zabbix database schema'],
-        } ->
-        exec { 'load sample data' :
-          command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/data.sql",
-          onlyif      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT COUNT(*) FROM hosts;\" | grep '^0$'",
-          environment => $db_env,
+          require     => Exec['create zabbix database'],
         }
+
+        # load sample data
+        if $load_sample_data {
+          exec { 'load sample data images' :
+            command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/images.sql",
+            onlyif      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT COUNT(*) FROM images;\" | grep '^0$'",
+            environment => $db_env,
+            require     => Exec['create zabbix database schema'],
+          } ->
+          exec { 'load sample data' :
+            command     => "${client_bin} -h ${dbhost} -U ${dbuser} -d ${dbname} -f ${pgscripts}/data.sql",
+            onlyif      => "${client_bin} -h ${dbhost} -U ${dbuser} -At -c \"SELECT COUNT(*) FROM hosts;\" | grep '^0$'",
+            environment => $db_env,
+          }
+        } 
       }
     }
 

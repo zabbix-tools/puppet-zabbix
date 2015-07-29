@@ -32,7 +32,7 @@ class zabbix::server::database (
 
       # command defaults
       Exec {
-        path => '/bin:/usr/bin',
+        path => [ '/bin', '/usr/bin' ],
       }
 
       # admin password

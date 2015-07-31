@@ -36,6 +36,7 @@ class zabbix::webserver::ldap_auth (
       $client_bin = 'psql'
       Exec {
         path => '/bin:/usr/bin',
+        environment => [ "PGPASSWORD=${dbpasswd}" ],
       }
 
       # configure ldap connection

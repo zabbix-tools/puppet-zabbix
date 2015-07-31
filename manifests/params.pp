@@ -54,15 +54,16 @@ class zabbix::params inherits zabbix::globals {
   $server_config_mode = '0640'
 
   # web server common
-  $web_package = 'zabbix-web'
-  $web_config_file = '/etc/zabbix/web/zabbix.conf.php'
+  $http_port            = 80
+  $docroot              = '/usr/share/zabbix'
+  $docroot_mode         = '0755'
+  $web_package          = 'zabbix-web'
+  # $web_config_file      = '/etc/zabbix/web/zabbix.conf.php'
+  $web_config_file      = "${docroot}/conf/zabbix.conf.php"
   $web_config_file_mode = '640'
-  $web_user = 'apache'
-  $web_group = 'apache'
-  $timezone = pick($timezone, 'Australia/Perth')
-  $http_port = 80
-  $docroot = '/usr/share/zabbix'
-  $docroot_mode = '0755'
+  $web_user             = 'apache'
+  $web_group            = 'apache'
+  $timezone             = pick($timezone, 'Australia/Perth')
 
   case $dbengine {
     'pgsql': {

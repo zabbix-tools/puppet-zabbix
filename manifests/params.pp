@@ -58,8 +58,12 @@ class zabbix::params inherits zabbix::globals {
   $docroot              = '/usr/share/zabbix'
   $docroot_mode         = '0755'
   $web_package          = 'zabbix-web'
-  # $web_config_file      = '/etc/zabbix/web/zabbix.conf.php'
-  $web_config_file      = "${docroot}/conf/zabbix.conf.php"
+  
+  if versioncmp($version, '2.4.0') >= 0 {
+    $web_config_file    = '/etc/zabbix/web/zabbix.conf.php'
+  } else {
+    $web_config_file      = "${docroot}/conf/zabbix.conf.php"
+  }
   $web_config_file_mode = '640'
   $web_user             = 'apache'
   $web_group            = 'apache'

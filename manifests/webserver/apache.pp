@@ -29,6 +29,11 @@ class zabbix::webserver::apache (
         default_confd_files => false,
         default_vhost       => false,
       }
+      
+      # configure selinux    
+      selinux::boolean { 'httpd_can_network_connect_db' : ensure => 'on' }
+      selinux::boolean { 'httpd_can_connect_zabbix': ensure => 'on' }
+      selinux::boolean { 'httpd_can_connect_ldap' : ensure => 'on' }
 
       # Start a name server on the required port
       apache::namevirtualhost { "*:${http_port}" : }

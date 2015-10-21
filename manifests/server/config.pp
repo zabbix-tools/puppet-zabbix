@@ -75,7 +75,7 @@ class zabbix::server::config (
   $vmware_frequency          = 60,
   $vmware_perf_frequency     = 60,
   $vmware_timeout            = 10,
-) {
+) inherits zabbix::params {
 
   # The base class must be included first because parameter defaults depend on it
   if ! defined(Class['zabbix::server']) {

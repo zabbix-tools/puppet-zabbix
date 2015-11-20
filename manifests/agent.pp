@@ -39,7 +39,7 @@ class zabbix::agent (
             allow_virtual => false,
           }
           
-          Package[$package] ~> Class['::zabbix::agent::server']
+          Package[$package] ~> Class['::zabbix::agent::service']
         }
       }
     }

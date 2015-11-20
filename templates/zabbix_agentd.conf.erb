@@ -7,7 +7,7 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ############ GENERAL PARAMETERS #################
-
+<% if @operatingsystem != 'windows' -%>
 ### Option: PidFile
 #	Name of PID file.
 #
@@ -15,6 +15,7 @@
 # Default:
 # PidFile=/tmp/zabbix_agentd.pid
 PidFile=<%= @pid_file %>
+<% end -%>
 
 ### Option: LogFile
 #	Name of log file.
@@ -252,6 +253,7 @@ Alias=<%= a['alias'] %>:<%= a['key'] %>
 # Timeout=3
 Timeout=<%= @timeout %>
 
+<% if @operatingsystem != 'windows' -%>
 ### Option: AllowRoot
 #	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
 #	will try to switch to user 'zabbix' instead. Has no effect if started under a regular user.
@@ -262,6 +264,7 @@ Timeout=<%= @timeout %>
 # Default:
 # AllowRoot=0
 AllowRoot=<%= @allow_root %>
+<% end -%>
 
 ### Option: Include
 #	You may include individual files or all files in a directory in the configuration file.

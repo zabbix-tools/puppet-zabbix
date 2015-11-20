@@ -10,29 +10,36 @@ class zabbix::agent (
   case $ensure {
     # install zabbix agent
     'present': {
-      # install package repo
-      if $manage_repo {
-        require ::zabbix::repo
-      }
-
-      # which provider should we use?
-      $_package_provider = $package_provider ? {
-        undef   => $package_source ? { undef => 'yum', default => 'rpm' },
-        default => $package_provider,
-      }
-
-      # install agent package
-      package { $package :
-        ensure        => $package_version,
-        provider      => $_package_provider,
-        source        => $package_source,
-        allow_virtual => false,
-      }
-
       # manage agent service
       if $manage_service {
-        class { '::zabbix::agent::service' : 
-          require => Package[$package],
+        class { '::zabbix::agent::service' : }
+      }
+      
+      case $::operatingsystem {
+        'windows': {
+          file { $::zabbix::params::agent_log_dir :
+            ensure => 'directory',
+          }
+          
+          if $manage_service {
+            File[$::zabbix::params::agent_log_dir] -> Class['::zabbix::agent::service']
+          }
+        }
+        
+        default: { 
+          # install package repo
+          if $manage_repo {
+            require ::zabbix::repo
+          }
+    
+          # install agent package
+          package { $package :
+            ensure        => $package_version,
+            source        => $package_source,
+            allow_virtual => false,
+          }
+          
+          Package[$package] ~> Class['::zabbix::agent::server']
         }
       }
     }

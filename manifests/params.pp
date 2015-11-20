@@ -88,13 +88,36 @@ class zabbix::params inherits zabbix::globals {
 
   # agent
   $agent_package = 'zabbix-agent'
-  $agent_service = 'zabbix-agent'  
   $agent_user    = $server_user
   $agent_group   = $server_group
 
   # agent config
-  $agent_config_file = '/etc/zabbix/zabbix_agentd.conf'
-  $agent_config_owner = 'root'
-  $agent_config_group = 'root'
-  $agent_config_mode = '0644'
+  case $::operatingsystem {
+    'windows': {
+      $agent_service = 'Zabbix Agent'
+      $agent_install_root = 'C:/Program Files/Zabbix'
+      $agent_config_file = "${agent_install_root}/conf/zabbix_agentd.win.conf"
+      $agent_config_includes = []
+      $agent_log_dir = "${agent_install_root}/logs"
+      $agent_log_file = "${agent_log_dir}/zabbix_agentd.log"
+      $agent_bin_dir = $::architecture ? {
+        'x64' => "${agent_install_root}/bin/win64",
+        default => "${agent_install_root}/bin/win32",
+      }
+      
+      $agent_config_owner = undef
+      $agent_config_group = undef
+      $agent_config_mode = undef
+    }
+    
+    default: {
+      $agent_service = 'zabbix-agent'
+      $agent_config_file = '/etc/zabbix/zabbix_agentd.conf'
+      $agent_config_includes = [ '/etc/zabbix/zabbix_agentd.d/' ]
+      $agent_config_owner = 'root'
+      $agent_config_group = 'root'
+      $agent_config_mode = '0644'
+      $agent_log_file = '/var/log/zabbix/zabbix_agentd.log'
+    }
+  }
 }

@@ -2,7 +2,7 @@
   "name": "cavaliercoder-zabbix",
   "version": "0.1.0",
   "author": "Ryan Armstrong <ryan@cavaliercoder.com>",
-  "license": "MIT License",
+  "license": "MIT",
   "summary": "Puppet module for managing Zabbix resources",
   "project_page": "https://github.com/cavaliercoder/puppet-zabbix",
   "source": "https://github.com/cavaliercoder/puppet-zabbix.git",
@@ -12,7 +12,7 @@
     { "name": "puppet", "version_requirement": ">= 2.7" }
   ],
   "operatingsystem_support": [
-    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7.0" ] },
+    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7.0" ] }
   ],
   "dependencies": [
     { "name": "puppetlabs/stdlib", "version_requirement": ">=4.5.0" },

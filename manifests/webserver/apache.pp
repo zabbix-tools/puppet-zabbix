@@ -16,6 +16,7 @@ class zabbix::webserver::apache (
   $php_post_max_size = '16M',
   $php_upload_max_filesize = '2M',
   $php_max_input_time = 300,
+  $php_max_input_vars = 5000,
 ) inherits zabbix::params {
 
   case $ensure {
@@ -60,6 +61,7 @@ class zabbix::webserver::apache (
                 "post_max_size ${php_post_max_size}",
                 "upload_max_filesize ${php_upload_max_filesize}",
                 "max_input_time ${php_max_input_time}",
+                "max_input_vars ${php_max_input_vars}",
                 "date.timezone ${timezone}",
             ],
           },

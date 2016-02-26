@@ -1,5 +1,7 @@
 # Zabbix module for Puppet
 
+[![Build Status](https://travis-ci.org/cavaliercoder/puppet-zabbix.svg?branch=master)](https://travis-ci.org/cavaliercoder/puppet-zabbix)
+
 #### Table of contents
 
 1. [Overview](#overview)

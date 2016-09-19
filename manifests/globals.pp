@@ -1,19 +1,28 @@
 # public overrides
 class zabbix::globals (
-  $version = undef,
+  $version         = undef,
+
+  $repo_manage     = undef,
+  $repo_ensure     = undef,
+  $repo_enabled    = undef,
+
+  $database_manage   = undef,
+  $database_driver   = undef,  
+  $database_admin    = undef,
+  $database_host     = undef,
+  $database_schema   = undef,
+  $database_name     = undef,
+  $database_user     = undef,
+  $database_password = undef,
+  $database_port     = undef,
+
+  $server_port = undef,
+
+
+
+
 
   $install_db_client = undef,
-  $dbengine = undef,
-  $dbhost = undef,
-  $dbschema = undef,
-  $dbname = undef,
-  $dbuser = undef,
-  $dbpasswd = undef,
-  $dbport = undef,
-
-  $dbadmin = undef,
-  $dbadmin_password = undef,
-  $dbadmin_db = undef,
 
   $manage_repo = undef,  
   $repo_url = undef,
@@ -23,7 +32,6 @@ class zabbix::globals (
   $timezone = undef,
 
   $server = undef,
-  $server_port = undef,
 ) {
 
 }

@@ -1,40 +1,23 @@
-class zabbix::repo (
-  $ensure = 'present',
-  $enabled = true,
+# PRIVATE CLASS: do not use directly
+class zabbix::repo inherits zabbix::params {
+  if $repo_manage {
+    case $::osfamily {
+      'RedHat', 'Linux' : {
+        $repo_version = "${ver_major}.${ver_minor}"
 
-  $baseurl = $::zabbix::params::repo_url,
-  $ns_baseurl = $::zabbix::params::ns_repo_url,
-  $gpgkey = $::zabbix::params::repo_gpgkey,
+        yumrepo { "zabbix-${repo_version}-${architecture}.el${distrelease}" :
+          ensure   => $repo_ensure,
+          enabled  => $repo_enabled,
+          baseurl  => $repo_url,
+          descr    => "Zabbix ${repo_version} EL${distrelease} ${architecture}",
+          gpgcheck => 1,
+          gpgkey   => 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX',
+        }
+      }
 
-  $repo_version = $::zabbix::params::repo_version,
-  $distrelease = $::zabbix::params::distrelease,
-) {
-  # The base class must be included first because parameter defaults depend on it
-  if ! defined(Class['zabbix::params']) {
-    fail('You must include the zabbix::params class before using any Zabbix defined resources')
-  }
-
-  # Base packages repo
-  $repo_name = "zabbix-${repo_version}-${architecture}.el${distrelease}"
-  $repo_descr = "Zabbix ${repo_version} EL${distrelease} ${architecture}"
-  yumrepo { $repo_name :
-    ensure   => $ensure,
-    baseurl  => $baseurl,
-    descr    => $repo_descr,
-    enabled  => $enabled,
-    gpgcheck => true,
-    gpgkey   => $gpgkey,
-  }
-
-  # Non-supported packages repo
-  $ns_repo_name = "zabbix-non-supported-${architecture}.el${distrelease}"
-  $ns_repo_descr = "Zabbix Non-Supported EL${distrelease} ${architecture}"
-  yumrepo { $ns_repo_name :
-    ensure   => $ensure,
-    baseurl  => $ns_baseurl,
-    descr    => $ns_repo_descr,
-    enabled  => $enabled,
-    gpgcheck => true,
-    gpgkey   => $gpgkey,
+      default : {
+        fail("Unsupported managed repository for osfamily: ${::osfamily}, operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports managing repos for osfamily RedHat")
+      }
+    }
   }
 }

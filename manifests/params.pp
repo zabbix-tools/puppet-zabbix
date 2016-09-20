@@ -19,24 +19,28 @@ class zabbix::params inherits zabbix::globals {
   $repo_manage     = pick($repo_manage, true)
   $repo_ensure     = pick($repo_ensure, 'present')
   $repo_enabled    = pick($repo_enabled, true)
-  $repo_url        = pick($repo_url, "http://repo.zabbix.com/zabbix/${ver_major}.${ver_minor}/rhel/${distrelease}/${architecture}/")
+  $repo_baseurl    = pick($repo_baseurl, "http://repo.zabbix.com/zabbix/${ver_major}.${ver_minor}/rhel/${distrelease}/${architecture}/")
+
+  $repo_enable_nonsupported  = pick($repo_enable_nonsupported, true)
+  $repo_baseurl_nonsupported = pick($repo_baseurl_nonsupported, "http://repo.zabbix.com/non-supported/rhel/${distrelease}/${architecture}/")
 
   $database_manage = pick($database_manage, true)
   $database_driver = pick($database_driver, 'pgsql')
-  $database_admin  = pick($database_admin, $database_driver ? {
-    'pgsql' => 'postgres',
-  })
 
   $database_host   = pick($database_host, 'localhost')
-  $database_schema = pick($database_schema, 'public')
   $database_name   = pick($database_name, 'zabbix')
   $database_user   = pick($database_user, 'zabbix')
-  $database_port   = $database_driver ? {
-    'pgsql' => '5432',
+
+  case $database_driver {
+    'pgsql' : {
+      $database_schema = pick($database_schema, 'public')
+      $database_port   = pick($database_port, 5432)
+      $database_admin  = pick($database_admin, 'postgres')
+    }
   }
 
   $server_package_manage = true
-  $server_package_name   = [ 'zabbix', "zabbix-server-${database_driver}" ]
+  $server_package_name   = "zabbix-server-${database_driver}"
 
   $server_service_manage = true
   $server_service_name  = 'zabbix-server'
@@ -60,11 +64,13 @@ class zabbix::params inherits zabbix::globals {
   $server_config_config_includes           = []
   $server_config_dbsocket                  = '/var/lib/mysql/mysql.sock'
   $server_config_debug_level               = 3
+  $server_config_drop_user                 = undef
   $server_config_enable_snmp_bulk_requests = 1
   $server_config_external_scripts_path     = '/usr/lib/zabbix/externalscripts'
   $server_config_fping6_location           = '/usr/sbin/fping6'
   $server_config_fping_location            = '/usr/sbin/fping'
   $server_config_history_cache_size        = '8M'
+  $server_config_history_index_cache_size  = '4M'
   $server_config_history_text_cache_size   = '16M'
   $server_config_housekeeping_frequency    = 1
   $server_config_java_gateway              = undef
@@ -76,6 +82,7 @@ class zabbix::params inherits zabbix::globals {
   $server_config_log_file                  = '/var/log/zabbix/zabbix_server.log'
   $server_config_log_file_size             = 1
   $server_config_log_slow_queries          = 0
+  $server_config_log_type                  = 'file'
   $server_config_max_housekeeper_delete    = 500
   $server_config_node_id                   = 0
   $server_config_node_no_events            = 0
@@ -87,8 +94,12 @@ class zabbix::params inherits zabbix::globals {
   $server_config_snmp_trapper_file         = '/var/log/snmptt/snmptt.log'
   $server_config_source_ip                 = undef
   $server_config_ssh_key_location          = undef
+  $server_config_ssl_ca_location           = undef
+  $server_config_ssl_cert_location         = '${datadir}/zabbix/ssl/certs'
+  $server_config_ssl_key_location          = '${datadir}/zabbix/ssh/keys'
   $server_config_start_db_syncers          = 4
   $server_config_start_discoverers         = 1
+  $server_config_start_escalators          = 1
   $server_config_start_http_pollers        = 1
   $server_config_start_ipmi_pollers        = 0
   $server_config_start_java_pollers        = 0
@@ -101,6 +112,10 @@ class zabbix::params inherits zabbix::globals {
   $server_config_start_trappers            = 5
   $server_config_start_vmware_collectors   = 0
   $server_config_timeout                   = 3
+  $server_config_tls_ca_file               = undef
+  $server_config_tls_cert_file             = undef
+  $server_config_tls_crl_file              = undef
+  $server_config_tls_key_file              = undef
   $server_config_tmp_dir                   = '/tmp'
   $server_config_trapper_timeout           = 300
   $server_config_trend_cache_size          = '4M'
@@ -124,18 +139,6 @@ class zabbix::params inherits zabbix::globals {
   #$repo_gpgkey = pick($repo_gpgkey, 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX')
 
   # database connection
-  $install_db_client = pick($install_db_client, false)
-  $dbengine = pick($dbengine, 'pgsql')
-  $dbhost = pick($dbhost, 'localhost')
-  $dbschema = pick($dbschema, 'public')
-  $dbname = pick($dbname, 'zabbix')
-  $dbuser = pick($dbuser, 'zabbix')
-  $dbpasswd = pick($dbpasswd, 'zabbix')
-  $dbport = pick($dbport, 5432)
-
-  $dbadmin = pick($dbadmin, 'postgres')
-  $dbadmin_db = pick($dbadmin_db, $dbadmin)
-
   $pgscripts = "/usr/share/doc/zabbix-server-pgsql-${ver_major}.${ver_minor}.${ver_patch}/create"
 
   # server common
@@ -160,12 +163,12 @@ class zabbix::params inherits zabbix::globals {
   $web_group            = 'apache'
   $timezone             = pick($timezone, 'Australia/Perth')
 
-  case $dbengine {
+  case $database_driver {
     'pgsql': {
-      $web_db_driver = 'POSTGRESQL'
+      $web_database_driver = 'POSTGRESQL'
     }
 
-    default : { fail("Unsupported db engine: ${dbengine}") }
+    default : { fail("Unsupported database driver: ${database_driver}") }
   }
 
   # LDAP auth integration

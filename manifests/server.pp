@@ -36,11 +36,13 @@ class zabbix::server (
   $config_includes           = $::zabbix::params::server_config_config_includes,
   $dbsocket                  = $::zabbix::params::server_config_dbsocket,
   $debug_level               = $::zabbix::params::server_config_debug_level,
+  $drop_user                 = $::zabbix::params::server_config_drop_user,
   $enable_snmp_bulk_requests = $::zabbix::params::server_config_enable_snmp_bulk_requests,
   $external_scripts_path     = $::zabbix::params::server_config_external_scripts_path,
   $fping6_location           = $::zabbix::params::server_config_fping6_location,
   $fping_location            = $::zabbix::params::server_config_fping_location,
   $history_cache_size        = $::zabbix::params::server_config_history_cache_size,
+  $history_index_cache_size  = $::zabbix::params::server_config_history_index_cache_size,
   $history_text_cache_size   = $::zabbix::params::server_config_history_text_cache_size,
   $housekeeping_frequency    = $::zabbix::params::server_config_housekeeping_frequency,
   $java_gateway              = $::zabbix::params::server_config_java_gateway,
@@ -52,6 +54,7 @@ class zabbix::server (
   $log_file                  = $::zabbix::params::server_config_log_file,
   $log_file_size             = $::zabbix::params::server_config_log_file_size,
   $log_slow_queries          = $::zabbix::params::server_config_log_slow_queries,
+  $log_type                  = $::zabbix::params::server_config_log_type,
   $max_housekeeper_delete    = $::zabbix::params::server_config_max_housekeeper_delete,
   $node_id                   = $::zabbix::params::server_config_node_id,
   $node_no_events            = $::zabbix::params::server_config_node_no_events,
@@ -63,8 +66,12 @@ class zabbix::server (
   $snmp_trapper_file         = $::zabbix::params::server_config_snmp_trapper_file,
   $source_ip                 = $::zabbix::params::server_config_source_ip,
   $ssh_key_location          = $::zabbix::params::server_config_ssh_key_location,
+  $ssl_ca_location           = $::zabbix::params::server_config_ssl_ca_location,
+  $ssl_cert_location         = $::zabbix::params::server_config_ssl_cert_location,
+  $ssl_key_location          = $::zabbix::params::server_config_ssl_key_location,
   $start_db_syncers          = $::zabbix::params::server_config_start_db_syncers,
   $start_discoverers         = $::zabbix::params::server_config_start_discoverers,
+  $start_escalators          = $::zabbix::params::server_config_start_escalators,
   $start_http_pollers        = $::zabbix::params::server_config_start_http_pollers,
   $start_ipmi_pollers        = $::zabbix::params::server_config_start_ipmi_pollers,
   $start_java_pollers        = $::zabbix::params::server_config_start_java_pollers,
@@ -77,6 +84,10 @@ class zabbix::server (
   $start_trappers            = $::zabbix::params::server_config_start_trappers,
   $start_vmware_collectors   = $::zabbix::params::server_config_start_vmware_collectors,
   $timeout                   = $::zabbix::params::server_config_timeout,
+  $tls_ca_file               = $::zabbix::params::server_config_tls_ca_file,
+  $tls_cert_file             = $::zabbix::params::server_config_tls_cert_file,
+  $tls_crl_file              = $::zabbix::params::server_config_tls_crl_file,
+  $tls_key_file              = $::zabbix::params::server_config_tls_key_file,
   $tmp_dir                   = $::zabbix::params::server_config_tmp_dir,
   $trapper_timeout           = $::zabbix::params::server_config_trapper_timeout,
   $trend_cache_size          = $::zabbix::params::server_config_trend_cache_size,
@@ -89,11 +100,6 @@ class zabbix::server (
   $vmware_perf_frequency     = $::zabbix::params::server_config_vmware_perf_frequency,
   $vmware_timeout            = $::zabbix::params::server_config_vmware_timeout,
 ) inherits zabbix::params {
-  # Install server before webserver if on the same box
-  if defined(Class['::zabbix::webserver']) {
-    Class['::zabbix::server'] -> Class['::zabbix::webserver']
-  }
-
   case $ensure {
     'present' : {
       anchor { '::zabbix::start' : } ->
@@ -102,6 +108,11 @@ class zabbix::server (
       class { '::zabbix::server::database' : } ->
       class { '::zabbix::server::service' : } ->
       anchor { '::zabbix::end' : }
+
+      # configure database before webserver if on the same box
+      if defined(Class['::zabbix::webserver']) {
+        Class['::zabbix::server::database'] -> Class['::zabbix::webserver']
+      }
     }
 
     default: {

@@ -48,9 +48,7 @@ class { '::zabbix::server' :
 }
 
 # install zabbix agent
-class { '::zabbix::agent' :
-  hostname_item => 'system.hostname',
-}
+class { '::zabbix::agent' : }
 
 # install utilities
 class { '::zabbix::get' : }

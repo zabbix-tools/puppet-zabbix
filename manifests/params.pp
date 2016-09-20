@@ -1,12 +1,10 @@
 # private computed global parameters
 class zabbix::params inherits zabbix::globals {
-  $version         = pick($version, '3.2.0')
-
-  # compute version components
+  $version       = pick($version, '3.2.0')
   $version_parts = split($version, '[.]')
-  $ver_major = $version_parts[0]
-  $ver_minor = $version_parts[1]
-  $ver_patch = $version_parts[2]
+  $ver_major     = $version_parts[0]
+  $ver_minor     = $version_parts[1]
+  $ver_patch     = $version_parts[2]
 
   # compute OS distrelease for package repos
   # this will be 5 or 6 on RedHat, 6 or wheezy on Debian, 12 or quantal on Ubuntu, etc.
@@ -35,7 +33,6 @@ class zabbix::params inherits zabbix::globals {
     'pgsql' : {
       $database_schema = pick($database_schema, 'public')
       $database_port   = pick($database_port, 5432)
-      $database_admin  = pick($database_admin, 'postgres')
     }
   }
 
@@ -163,18 +160,19 @@ class zabbix::params inherits zabbix::globals {
 
   case $::operatingsystem {
     'windows': {
+      $agent_install_root = 'C:/Program Files/Zabbix'
+
       $agent_service_name = 'Zabbix Agent'
 
-      $agent_config_path = "${agent_install_root}/conf/zabbix_agentd.win.conf"
-      $agent_config_includes = []
-      $agent_config_log_dir = "${agent_install_root}/logs"
-      $agent_config_log_file = "${agent_log_dir}/zabbix_agentd.log"
-      
-      $agent_install_root = 'C:/Program Files/Zabbix'
       $agent_bin_dir = $::architecture ? {
-        'x64' => "${agent_install_root}/bin/win64",
+        'x64'   => "${agent_install_root}/bin/win64",
         default => "${agent_install_root}/bin/win32",
       }
+
+      $agent_config_path     = "${agent_install_root}/conf/zabbix_agentd.win.conf"
+      $agent_config_includes = []
+      $agent_config_log_dir  = "${agent_install_root}/logs"
+      $agent_config_log_file = "${agent_log_dir}/zabbix_agentd.log"
     }
     
     default: {
@@ -184,8 +182,6 @@ class zabbix::params inherits zabbix::globals {
       $agent_config_owner    = 'root'
       $agent_config_group    = $agent_group
       $agent_config_mode     = '0640'
-
-
       $agent_config_log_file = '/var/log/zabbix/zabbix_agentd.log'
       if versioncmp($version, '2.4.0') > 0 {
         $agent_config_includes = [ '/etc/zabbix/zabbix_agentd.d/*.conf' ]
@@ -223,7 +219,6 @@ class zabbix::params inherits zabbix::globals {
   $agent_config_timeout                = 3
   $agent_config_unsafe_user_parameters = 0
   $agent_config_user_parameters        = []
-
 
   #
   # web server parameters

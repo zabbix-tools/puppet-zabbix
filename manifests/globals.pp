@@ -12,8 +12,6 @@ class zabbix::globals (
 
   $database_manage   = undef,
   $database_driver   = undef,  
-  $database_admin    = undef,
-  $database_admin_password = undef,
   $database_host     = undef,
   $database_schema   = undef,
   $database_name     = undef,

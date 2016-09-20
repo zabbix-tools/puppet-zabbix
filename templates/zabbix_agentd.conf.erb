@@ -183,6 +183,7 @@ Hostname=<%= @hostname %>
 HostnameItem=<%= @hostname_item %>
 <% end -%>
 
+<% if scope.function_versioncmp([@version, '2.2.0']) > 0 -%>
 ### Option: HostMetadata
 #	Optional parameter that defines host metadata.
 #	Host metadata is used at host auto-registration process.
@@ -209,8 +210,8 @@ HostMetadata=<%= @host_metadata %>
 # HostMetadataItem=
 <% if @host_metadata_item %>
 HostMetadataItem=<%= @host_metadata_item %>
+<% end %>
 <% end -%>
-
 ### Option: RefreshActiveChecks
 #	How often list of active checks is refreshed, in seconds.
 #

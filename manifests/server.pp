@@ -15,6 +15,7 @@ class zabbix::server (
 
   $package_manage    = $::zabbix::params::server_package_manage,
   $package_name      = $::zabbix::params::server_package_name,
+  $package_ensure    = $::zabbix::params::server_package_ensure,
 
   $service_manage    = $::zabbix::params::server_service_manage,
   $service_name      = $::zabbix::params::server_service_name,
@@ -100,12 +101,12 @@ class zabbix::server (
 ) inherits zabbix::params {
   case $ensure {
     'present' : {
-      anchor { '::zabbix::start' : } ->
+      anchor { '::zabbix::server::start' : } ->
       class { '::zabbix::server::install' : } ->
       class { '::zabbix::server::config' : } ->
       class { '::zabbix::server::database' : } ->
       class { '::zabbix::server::service' : } ->
-      anchor { '::zabbix::end' : }
+      anchor { '::zabbix::server::end' : }
 
       # configure database before webserver if on the same box
       if defined(Class['::zabbix::webserver']) {

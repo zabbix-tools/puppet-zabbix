@@ -39,16 +39,33 @@ class zabbix::params inherits zabbix::globals {
     }
   }
 
+  #
+  # zabbix_get parameters
+  #
+  $get_package_name   = 'zabbix-get'
+  $get_package_ensure = "${version}-1.el${distrelease}"
+
+  #
+  # zabbix_sender parameters
+  #
+  $sender_package_name   = 'zabbix-sender'
+  $sender_package_ensure = "${version}-1.el${distrelease}"
+
+  #
+  # Server parameters
+  #
+  $server_host  = pick($server_host, '127.0.0.1')
+  $server_user  = 'zabbix'
+  $server_group = 'zabbix'
+
   $server_package_manage = true
   $server_package_name   = "zabbix-server-${database_driver}"
+  $server_package_ensure = "${version}-1.el${distrelease}"
 
   $server_service_manage = true
   $server_service_name  = 'zabbix-server'
   $server_service_ensure = 'running'
   $server_service_enable = true
-
-  $server_user  = 'zabbix'
-  $server_group = 'zabbix'
 
   $server_config_manage = true
   $server_config_ensure = 'file'
@@ -128,23 +145,93 @@ class zabbix::params inherits zabbix::globals {
   $server_config_vmware_perf_frequency     = 60
   $server_config_vmware_timeout            = 10
 
+  #
+  # agent parameters
+  #
+  $agent_user    = $server_user
+  $agent_group   = $server_group
 
-  #$repo_version = "${ver_major}.${ver_minor}"
-  #$package_version = "${ver_major}.${ver_minor}.${ver_patch}-${ver_release}.el${distrelease}"
+  $agent_package_manage  = true
+  $agent_package_name    = 'zabbix-agent'
+  $agent_package_ensure  = "${version}-1.el${distrelease}"
 
-  # yum repo
-  #$manage_repo = pick($manage_repo, true)
-  #$repo_url = pick($repo_url, "http://repo.zabbix.com/zabbix/${repo_version}/rhel/${distrelease}/${architecture}/")
-  #$ns_repo_url = pick($ns_repo_url, "http://repo.zabbix.com/non-supported/rhel/${distrelease}/${architecture}/")
-  #$repo_gpgkey = pick($repo_gpgkey, 'http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX')
+  $agent_service_manage  = true
+  $agent_service_ensure  = 'running'
+  $agent_service_enable  = true
 
-  # database connection
-  $pgscripts = "/usr/share/doc/zabbix-server-pgsql-${ver_major}.${ver_minor}.${ver_patch}/create"
+  $agent_config_manage   = true
+
+  case $::operatingsystem {
+    'windows': {
+      $agent_service_name = 'Zabbix Agent'
+
+      $agent_config_path = "${agent_install_root}/conf/zabbix_agentd.win.conf"
+      $agent_config_includes = []
+      $agent_config_log_dir = "${agent_install_root}/logs"
+      $agent_config_log_file = "${agent_log_dir}/zabbix_agentd.log"
+      
+      $agent_install_root = 'C:/Program Files/Zabbix'
+      $agent_bin_dir = $::architecture ? {
+        'x64' => "${agent_install_root}/bin/win64",
+        default => "${agent_install_root}/bin/win32",
+      }
+    }
+    
+    default: {
+      $agent_service_name    = 'zabbix-agent'
+
+      $agent_config_path     = '/etc/zabbix/zabbix_agentd.conf'
+      $agent_config_owner    = 'root'
+      $agent_config_group    = $agent_group
+      $agent_config_mode     = '0640'
+
+
+      $agent_config_log_file = '/var/log/zabbix/zabbix_agentd.log'
+      if versioncmp($version, '2.4.0') > 0 {
+        $agent_config_includes = [ '/etc/zabbix/zabbix_agentd.d/*.conf' ]
+      } else {
+        $agent_config_includes = [ '/etc/zabbix/zabbix_agentd.d/' ]
+      }
+    }
+  }
+
+  $agent_config_aliases                = []
+  $agent_config_allow_root             = 0
+  $agent_config_buffer_send            = 5
+  $agent_config_buffer_size            = 100
+  $agent_config_debug_level            = 3
+  $agent_config_drop_user              = undef
+  $agent_config_enable_remote_commands = 0
+  $agent_config_host_metadata          = undef
+  $agent_config_host_metadata_item     = undef
+  $agent_config_hostname               = downcase($::fqdn)
+  $agent_config_hostname_item          = undef
+  $agent_config_listen_ip              = '0.0.0.0'
+  $agent_config_listen_port            = '10050'
+  $agent_config_load_module_path       = undef
+  $agent_config_load_modules           = []
+  $agent_config_log_file_size          = 0
+  $agent_config_log_remote_commands    = 0
+  $agent_config_log_type               = 'file'
+  $agent_config_max_lines_per_second   = 100
+  $agent_config_pid_file               = '/var/run/zabbix/zabbix_agentd.pid'
+  $agent_config_refresh_active_checks  = 120
+  $agent_config_server_active          = [ "${server_host}:${server_config_listen_port}" ]
+  $agent_config_servers                = [ '127.0.0.1', $server_host ]
+  $agent_config_source_ip              = undef
+  $agent_config_start_agents           = 3
+  $agent_config_timeout                = 3
+  $agent_config_unsafe_user_parameters = 0
+  $agent_config_user_parameters        = []
+
+
+  #
+  # web server parameters
+  #
 
   # server common
-  $server = pick($server, 'localhost')
   $server_name = "Zabbix ${::environment}"
-  $server_service = 'zabbix-server'
+
 
 
   # web server common
@@ -171,47 +258,5 @@ class zabbix::params inherits zabbix::globals {
     default : { fail("Unsupported database driver: ${database_driver}") }
   }
 
-  # LDAP auth integration
-  $ldap_host = undef
-  $ldap_port = 389
-  $ldap_base_dn = undef
-  $ldap_bind_dn = undef
-  $ldap_bind_pwd = undef
-  $ldap_user = undef
-  $ldap_search_att = 'sAMAccountName'
 
-  # agent
-  $agent_package = 'zabbix-agent'
-  $agent_user    = $server_user
-  $agent_group   = $server_group
-
-  # agent config
-  case $::operatingsystem {
-    'windows': {
-      $agent_service = 'Zabbix Agent'
-      $agent_install_root = 'C:/Program Files/Zabbix'
-      $agent_config_file = "${agent_install_root}/conf/zabbix_agentd.win.conf"
-      $agent_config_includes = []
-      $agent_log_dir = "${agent_install_root}/logs"
-      $agent_log_file = "${agent_log_dir}/zabbix_agentd.log"
-      $agent_bin_dir = $::architecture ? {
-        'x64' => "${agent_install_root}/bin/win64",
-        default => "${agent_install_root}/bin/win32",
-      }
-      
-      $agent_config_owner = undef
-      $agent_config_group = undef
-      $agent_config_mode = undef
-    }
-    
-    default: {
-      $agent_service = 'zabbix-agent'
-      $agent_config_file = '/etc/zabbix/zabbix_agentd.conf'
-      $agent_config_includes = [ '/etc/zabbix/zabbix_agentd.d/' ]
-      $agent_config_owner = 'root'
-      $agent_config_group = 'root'
-      $agent_config_mode = '0644'
-      $agent_log_file = '/var/log/zabbix/zabbix_agentd.log'
-    }
-  }
 }

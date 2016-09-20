@@ -21,22 +21,8 @@ class zabbix::globals (
   $database_password = undef,
   $database_port     = undef,
 
+  $server_host = undef,
   $server_port = undef,
-
-
-
-
-
-  $install_db_client = undef,
-
-  $manage_repo = undef,  
-  $repo_url = undef,
-  $ns_repo_url = undef,
-  $repo_gpgkey = undef,
-
-  $timezone = undef,
-
-  $server = undef,
 ) {
 
 }

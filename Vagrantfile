@@ -17,6 +17,7 @@ echo -e "$BULLET Installing $MOD_NAME dependencies..."
 puppet module install puppetlabs/stdlib
 puppet module install puppetlabs/postgresql
 puppet module install puppetlabs/apache
+puppet module install jfryman/selinux
 
 # Install this module by mapping /vagrant to /etc/puppet/modules/$MOD_NAME
 echo -e "$BULLET Installing $MOD_NAME..."

@@ -10,19 +10,19 @@
 
 global $DB;
 
-$DB['TYPE']     = '<%= @dbdriver %>';
-$DB['SERVER']   = '<%= @dbhost %>';
-$DB['PORT']     = '<%= @dbport %>';
-$DB['DATABASE'] = '<%= @dbname %>';
-$DB['USER']     = '<%= @dbuser %>';
-$DB['PASSWORD'] = '<%= @dbpasswd %>';
+$DB['TYPE']     = '<%= @database_driver %>';
+$DB['SERVER']   = '<%= @database_host %>';
+$DB['PORT']     = '<%= @database_port %>';
+$DB['DATABASE'] = '<%= @database_name %>';
+$DB['USER']     = '<%= @database_user %>';
+$DB['PASSWORD'] = '<%= @database_passwd %>';
 
 // SCHEMA is relevant only for IBM_DB2 database
-$DB['SCHEMA'] = '<%= @dbschema %>';
+$DB['SCHEMA'] = '<%= @database_schema %>';
 
-$ZBX_SERVER      = '<%= @server %>';
+$ZBX_SERVER      = '<%= @server_host %>';
 $ZBX_SERVER_PORT = '<%= @server_port %>';
-$ZBX_SERVER_NAME = '<%= @server_name %>';
+$ZBX_SERVER_NAME = '<%= @server_descr %>';
 
 $IMAGE_FORMAT_DEFAULT = IMAGE_FORMAT_PNG;
 ?>

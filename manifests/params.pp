@@ -54,6 +54,7 @@ class zabbix::params inherits zabbix::globals {
   # Server parameters
   #
   $server_host  = pick($server_host, '127.0.0.1')
+  $server_port  = pick($server_port, 10051)
   $server_user  = 'zabbix'
   $server_group = 'zabbix'
 
@@ -92,7 +93,7 @@ class zabbix::params inherits zabbix::globals {
   $server_config_java_gateway              = undef
   $server_config_java_gateway_port         = 10052
   $server_config_listen_ip                 = '0.0.0.0'
-  $server_config_listen_port               = pick($server_port, 10051)
+  $server_config_listen_port               = $server_port
   $server_config_load_modules              = []
   $server_config_load_modules_path         = undef
   $server_config_log_file                  = '/var/log/zabbix/zabbix_server.log'
@@ -225,35 +226,36 @@ class zabbix::params inherits zabbix::globals {
   #
   # web server parameters
   #
+  $web_user               = 'apache'
+  $web_group              = 'apache'
+  $web_docroot            = '/usr/share/zabbix'
 
-  # server common
-  $server_name = "Zabbix ${::environment}"
+  $web_server_descr       = join([ 'Zabbix ', camelcase($::environment) ])
 
+  $web_package_manage     = true
+  $web_package_name       = "zabbix-web-${database_driver}"
+  $web_package_ensure     = "${version}-1.el${distrelease}"
 
+  $web_apache_manage      = false
+  $web_apache_http_port   = '80'
 
-  # web server common
-  $http_port            = 80
-  $docroot              = '/usr/share/zabbix'
-  $docroot_mode         = '0755'
-  $web_package          = 'zabbix-web'
-  
+  $web_php_package_manage = true
+  $web_php_package_ensure = 'installed'
+  $web_php_package_name   = [
+    'php',
+    'php-bcmath',
+    'php-common',
+    'php-gd',
+    'php-ldap',
+    'php-mbstring',
+    'php-pgsql',
+    'php-xml',
+  ]
+
+  $web_config_manage = true
   if versioncmp($version, '2.4.0') >= 0 {
-    $web_config_file    = '/etc/zabbix/web/zabbix.conf.php'
+    $web_config_path = '/etc/zabbix/web/zabbix.conf.php'
   } else {
-    $web_config_file      = "${docroot}/conf/zabbix.conf.php"
+    $web_config_path = "${web_docroot}/conf/zabbix.conf.php"
   }
-  $web_config_file_mode = '640'
-  $web_user             = 'apache'
-  $web_group            = 'apache'
-  $timezone             = pick($timezone, 'Australia/Perth')
-
-  case $database_driver {
-    'pgsql': {
-      $web_database_driver = 'POSTGRESQL'
-    }
-
-    default : { fail("Unsupported database driver: ${database_driver}") }
-  }
-
-
 }

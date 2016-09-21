@@ -8,16 +8,16 @@
   "source": "https://github.com/cavaliercoder/puppet-zabbix.git",
   "tags": ["zabbix"],
   "requirements" : [
-    { "name": "pe", "version_requirement": ">= 3.x" },
+    { "name": "pe",     "version_requirement": ">= 3.x" },
     { "name": "puppet", "version_requirement": ">= 2.7" }
   ],
   "operatingsystem_support": [
     { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7.0" ] }
   ],
   "dependencies": [
-    { "name": "puppetlabs/stdlib", "version_requirement": ">=4.5.0" },
-    { "name": "puppetlabs/postgresql", "version_requirement": ">=4.3.0" },
-    { "name": "puppetlabs/apache", "version_requirement": ">=1.5.0" },
-    { "name": "jfryman/selinux", "version_requirement": ">=0.2.6" }
+    { "name": "puppetlabs/stdlib",     "version_requirement": ">=4.12.0" },
+    { "name": "puppetlabs/postgresql", "version_requirement": ">=4.8.0" },
+    { "name": "puppetlabs/apache",     "version_requirement": ">=1.10.0" },
+    { "name": "jfryman/selinux",       "version_requirement": ">=0.4.0" }
   ]
 }

@@ -1,6 +1,4 @@
 class zabbix::agent (
-  $ensure           = 'present',
-
   $user             = $::zabbix::params::agent_user,
   $group            = $::zabbix::params::agent_group,
 
@@ -51,17 +49,9 @@ class zabbix::agent (
   $unsafe_user_parameters = $::zabbix::params::agent_config_unsafe_user_parameters,
   $user_parameters        = $::zabbix::params::agent_config_user_parameters,
 ) inherits zabbix::params {
-  case $ensure {
-    'present': {
-      anchor { '::zabbix::agent::start' : } ->
-      class { '::zabbix::agent::install' : } ->
-      class { '::zabbix::agent::config' : } ->
-      class { '::zabbix::agent::service' : } ->
-      anchor { '::zabbix::agent::end' : }
-    }
-
-    default: {
-      fail ("Unsupported 'ensure' value: ${ensure}")
-    }
-  }
+  anchor { '::zabbix::agent::start' : } ->
+  class { '::zabbix::agent::install' : } ->
+  class { '::zabbix::agent::config' : } ->
+  class { '::zabbix::agent::service' : } ->
+  anchor { '::zabbix::agent::end' : }
 }

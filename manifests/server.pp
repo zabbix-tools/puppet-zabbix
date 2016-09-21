@@ -1,5 +1,4 @@
 class zabbix::server (
-  $ensure            = 'present',
   $version           = $::zabbix::params::version,
 
   $repo_manage       = $::zabbix::params::repo_manage,
@@ -99,23 +98,15 @@ class zabbix::server (
   $vmware_perf_frequency     = $::zabbix::params::server_config_vmware_perf_frequency,
   $vmware_timeout            = $::zabbix::params::server_config_vmware_timeout,
 ) inherits zabbix::params {
-  case $ensure {
-    'present' : {
-      anchor { '::zabbix::server::start' : } ->
-      class { '::zabbix::server::install' : } ->
-      class { '::zabbix::server::config' : } ->
-      class { '::zabbix::server::database' : } ->
-      class { '::zabbix::server::service' : } ->
-      anchor { '::zabbix::server::end' : }
+  anchor { '::zabbix::server::start' : } ->
+  class { '::zabbix::server::install' : } ->
+  class { '::zabbix::server::config' : } ->
+  class { '::zabbix::server::database' : } ->
+  class { '::zabbix::server::service' : } ->
+  anchor { '::zabbix::server::end' : }
 
-      # configure database before webserver if on the same box
-      if defined(Class['::zabbix::webserver']) {
-        Class['::zabbix::server::database'] -> Class['::zabbix::webserver']
-      }
-    }
-
-    default: {
-      fail ("Unsupported 'ensure' value: ${ensure}")
-    }
+  # configure database before webserver if on the same box
+  if defined(Class['::zabbix::webserver']) {
+    Class['::zabbix::server::database'] -> Class['::zabbix::webserver']
   }
 }

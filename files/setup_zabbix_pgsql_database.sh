@@ -1,6 +1,6 @@
 #!/bin/sh
 ZABBIX_SERVER_CONF=/etc/zabbix/zabbix_server.conf
-CHECK_QUERY="SELECT table_name FROM information_schema.tables WHERE table_name='hosts';"
+CHECK_QUERY="SELECT mandatory FROM dbversion;"
 
 function die() {
 	echo $@ >&2
@@ -37,7 +37,7 @@ fi
 $PSQL -c "SELECT 1;" >/dev/null || die
 
 # check if db is provisioned
-$PSQL -c "${CHECK_QUERY}" | grep '^hosts$' >/dev/null
+$PSQL -c "${CHECK_QUERY}" >/dev/null 2>&1
 PROVISIONED=$?
 
 # exit if just checking
@@ -64,6 +64,6 @@ if [[ $PROVISIONED -ne 0 ]]; then
 	fi
 
 	# double check
-	$PSQL -c "${CHECK_QUERY}" | grep '^hosts$' >/dev/null \
+	$PSQL -c "${CHECK_QUERY}" >/dev/null 2>&1 \
 		|| die "Database creation scripts ran but the desired tables were not found"
 fi

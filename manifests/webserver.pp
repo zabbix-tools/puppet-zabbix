@@ -43,8 +43,8 @@ class zabbix::webserver (
   $php_always_populate_raw_post_data = '-1',
 ) inherits zabbix::params {
   anchor { '::zabbix::webserver::start' : } ->
-  class { '::zabbix::webserver::apache' : } ->
   class { '::zabbix::webserver::install' : } ->
   class { '::zabbix::webserver::config' : } ->
+  class { '::zabbix::webserver::apache' : } ->
   anchor { '::zabbix::webserver::end' : }
 }

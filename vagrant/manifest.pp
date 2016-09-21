@@ -2,13 +2,13 @@
 # Build vagrant VM to test Zabbix classes
 #
 
-# Install PostgreSQL server first
+# install PostgreSQL server first
 class { '::postgresql::server' :
   # postgres_password => 'Password1',
   pg_hba_conf_defaults => false,
 }
 
-# Allow all hosts
+# allow all hosts
 postgresql::server::pg_hba_rule { 'allow all hosts':
   type        => 'host',
   database    => 'all',
@@ -17,7 +17,7 @@ postgresql::server::pg_hba_rule { 'allow all hosts':
   auth_method => 'trust',
 }
 
-# Allow all local sockets
+# allow all local sockets
 postgresql::server::pg_hba_rule { 'allow all local':
   type        => 'local',
   database    => 'all',
@@ -25,31 +25,32 @@ postgresql::server::pg_hba_rule { 'allow all local':
   auth_method => 'trust',
 }
 
+# create zabbix role
 postgresql::server::role { 'zabbix' :
   password_hash => postgresql_password('zabbix', 'zabbix'),
 } ->
 
+# create zabbix database
 postgresql::server::database { 'zabbix' :
   owner => 'zabbix',
 }
 
-# configure globals
+# configure zabbix class globals
 class { '::zabbix::globals' :
-  version     => '3.2.0',
-  server_port => '10051',
+  version => '3.2.0',
 }
 
 # install zabbix server
 class { '::zabbix::server' :
-  require       => [
-    Class['::postgresql::server'],
-    Postgresql::Server::Database['zabbix'],
-  ],
+  require =>  Postgresql::Server::Database['zabbix']
 }
 
-# install zabbix agent
-class { '::zabbix::agent' : }
+# install webserver, apache and php
+class { '::zabbix::webserver' :
+  apache_manage => true,
+}
 
-# install utilities
+# install agent and tools
+class { '::zabbix::agent' : }
 class { '::zabbix::get' : }
 class { '::zabbix::sender' : }

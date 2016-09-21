@@ -35,7 +35,7 @@ echo -e "$BULLET Applying $MOD_NAME module..."
 puppet apply /vagrant/vagrant/manifest.pp
 
 # reset command:
-# yum remove -y zabbix* httpd* php* postgresql* && rm -rvf /etc/zabbix /var/lib/pgsql /etc/httpd
+# yum remove -y zabbix-release zabbix-server zabbix-web zabbix-agent zabbix-get zabbix-sender httpd* php* postgresql* && rm -rf /etc/zabbix /etc/yum.repos.d/zabbix-* /var/lib/pgsql /etc/httpd
 
 script
 

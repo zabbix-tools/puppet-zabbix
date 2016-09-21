@@ -253,7 +253,7 @@ class zabbix::params inherits zabbix::globals {
   ]
 
   $web_config_manage = true
-  if versioncmp($version, '2.4.0') >= 0 {
+  if versioncmp($version, '2.2.0') >= 0 {
     $web_config_path = '/etc/zabbix/web/zabbix.conf.php'
   } else {
     $web_config_path = "${web_docroot}/conf/zabbix.conf.php"

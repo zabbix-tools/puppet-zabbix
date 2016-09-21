@@ -236,6 +236,9 @@ class zabbix::params inherits zabbix::globals {
   $web_package_name       = "zabbix-web-${database_driver}"
   $web_package_ensure     = "${version}-1.el${distrelease}"
 
+  $web_vhost_manage       = true
+  $web_vhost_name         = "zabbix_${::environment}"
+
   $web_apache_manage      = false
   $web_apache_http_port   = '80'
 

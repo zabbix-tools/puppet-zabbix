@@ -29,6 +29,9 @@ class zabbix::webserver (
   $apache_manage     = $::zabbix::params::web_apache_manage,
   $apache_http_port  = $::zabbix::params::web_apache_http_port,
 
+  $vhost_manage      = $::zabbix::params::web_vhost_manage,
+  $vhost_name        = $::zabbix::params::web_vhost_name,
+
   $php_package_manage = $::zabbix::params::web_php_package_manage,
   $php_package_name   = $::zabbix::params::web_php_package_name,
   $php_package_ensure = $::zabbix::params::web_php_package_ensure,
@@ -46,5 +49,6 @@ class zabbix::webserver (
   class { '::zabbix::webserver::install' : } ->
   class { '::zabbix::webserver::config' : } ->
   class { '::zabbix::webserver::apache' : } ->
+  class { '::zabbix::webserver::vhost' : } ->
   anchor { '::zabbix::webserver::end' : }
 }

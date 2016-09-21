@@ -7,8 +7,10 @@ class zabbix::globals (
   $repo_enabled    = undef,
   $repo_baseurl    = undef,
 
-  $repo_enable_nonsupported  = undef,
-  $repo_baseurl_nonsupported = undef,
+  $repo_nonsupported_manage  = undef,
+  $repo_nonsupported_ensure  = undef,
+  $repo_nonsupported_enabled = undef,
+  $repo_nonsupported_baseurl = undef,
 
   $database_manage   = undef,
   $database_driver   = undef,  

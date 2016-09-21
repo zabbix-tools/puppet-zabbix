@@ -19,8 +19,10 @@ class zabbix::params inherits zabbix::globals {
   $repo_enabled    = pick($repo_enabled, true)
   $repo_baseurl    = pick($repo_baseurl, "http://repo.zabbix.com/zabbix/${ver_major}.${ver_minor}/rhel/${distrelease}/${architecture}/")
 
-  $repo_enable_nonsupported  = pick($repo_enable_nonsupported, true)
-  $repo_baseurl_nonsupported = pick($repo_baseurl_nonsupported, "http://repo.zabbix.com/non-supported/rhel/${distrelease}/${architecture}/")
+  $repo_nonsupported_manage  = pick($repo_nonsupported_manage, true)
+  $repo_nonsupported_ensure  = pick($repo_nonsupported_ensure, 'present')
+  $repo_nonsupported_enabled = pick($repo_nonsupported_enabled, true)
+  $repo_nonsupported_baseurl = pick($repo_nonsupported_baseurl, "http://repo.zabbix.com/non-supported/rhel/${distrelease}/${architecture}/")
 
   $database_manage = pick($database_manage, true)
   $database_driver = pick($database_driver, 'pgsql')

@@ -14,7 +14,7 @@ which zcat >/dev/null 2>&1 || die "zcat binary not found in PATH"
 which zabbix_server >/dev/null 2>&1 || die "Zabbix Server binary not found in PATH"
 
 # get zabbix server version
-ZABBIX_SERVER_VERSION=$(zabbix_server -V | head -n 1 | grep -o '[0-9.]\+')
+ZABBIX_SERVER_VERSION=$(zabbix_server -V | head -n 1 | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
 ZABBIX_DATABASE_SCRIPTS="/usr/share/doc/zabbix-server-pgsql-${ZABBIX_SERVER_VERSION}"
 
 # read zabbix server database connection config
@@ -50,11 +50,17 @@ if [[ $PROVISIONED -ne 0 ]]; then
 		zcat "${ZABBIX_DATABASE_SCRIPTS}/create.sql.gz" | $PSQL >/dev/null 2>&1 \
 			|| die "Error running database creation script"
 	else
-		[[ -f "${ZABBIX_DATABASE_SCRIPTS}/schema.sql" ]] \
+		[[ -f "${ZABBIX_DATABASE_SCRIPTS}/create/schema.sql" ]] \
 			|| die "Zabbix database scripts not found: ${ZABBIX_DATABASE_SCRIPTS}"
 
-		$PSQL --file="${ZABBIX_DATABASE_SCRIPTS}/schema.sql" >/dev/null 2>&1 \
+		$PSQL --file="${ZABBIX_DATABASE_SCRIPTS}/create/schema.sql" >/dev/null 2>&1 \
 			|| die "Error running database creation script"
+
+		$PSQL --file="${ZABBIX_DATABASE_SCRIPTS}/create/images.sql" >/dev/null 2>&1 \
+			|| die "Error running database image import script"
+
+		$PSQL --file="${ZABBIX_DATABASE_SCRIPTS}/create/data.sql" >/dev/null 2>&1 \
+			|| die "Error running database data import script"
 	fi
 
 	# double check

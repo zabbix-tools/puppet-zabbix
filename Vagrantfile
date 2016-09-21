@@ -33,6 +33,10 @@ YAML
 # Apply this module
 echo -e "$BULLET Applying $MOD_NAME module..."
 puppet apply /vagrant/vagrant/manifest.pp
+
+# reset command:
+# yum remove -y zabbix* httpd* php* postgresql* && rm -rvf /etc/zabbix /var/lib/pgsql /etc/httpd
+
 script
 
 # Vagrant condiguration

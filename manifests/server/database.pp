@@ -20,8 +20,6 @@ class zabbix::server::database {
           command     => $setup_bin,
           unless      => "${setup_bin} check",
           path        => '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin',
-          refreshonly => true,
-          subscribe   => Class['::zabbix::server::install'],
         }
       }
 

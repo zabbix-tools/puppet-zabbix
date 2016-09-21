@@ -1,40 +1,41 @@
-class zabbix::repo (
-  $ensure = 'present',
-  $enabled = true,
+# PRIVATE CLASS: do not use directly
+class zabbix::repo inherits zabbix::params {
+  $repo_version = "${ver_major}.${ver_minor}"
+  $gpg_key_path = '/etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX'
 
-  $baseurl = $::zabbix::params::repo_url,
-  $ns_baseurl = $::zabbix::params::ns_repo_url,
-  $gpgkey = $::zabbix::params::repo_gpgkey,
-
-  $repo_version = $::zabbix::params::repo_version,
-  $distrelease = $::zabbix::params::distrelease,
-) {
-  # The base class must be included first because parameter defaults depend on it
-  if ! defined(Class['zabbix::params']) {
-    fail('You must include the zabbix::params class before using any Zabbix defined resources')
+  if $repo_manage or $repo_nonsupported_manage {
+    file { $gpg_key_path :
+      source  => "puppet:///modules/${module_name}/RPM-GPG-KEY-ZABBIX",
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      seluser => 'system_u',
+      selrole => 'object_r',
+      seltype => 'cert_t',
+    }
   }
 
-  # Base packages repo
-  $repo_name = "zabbix-${repo_version}-${architecture}.el${distrelease}"
-  $repo_descr = "Zabbix ${repo_version} EL${distrelease} ${architecture}"
-  yumrepo { $repo_name :
-    ensure   => $ensure,
-    baseurl  => $baseurl,
-    descr    => $repo_descr,
-    enabled  => $enabled,
-    gpgcheck => true,
-    gpgkey   => $gpgkey,
+  if $repo_manage {
+    yumrepo { "zabbix-${repo_version}-${architecture}.el${distrelease}" :
+      ensure   => $repo_ensure,
+      enabled  => $repo_enabled,
+      baseurl  => $repo_baseurl,
+      descr    => "Zabbix ${repo_version} EL${distrelease} ${architecture}",
+      gpgcheck => 1,
+      gpgkey   => "file://${gpg_key_path}",
+      require  => File[$gpg_key_path],
+    }
   }
 
-  # Non-supported packages repo
-  $ns_repo_name = "zabbix-non-supported-${architecture}.el${distrelease}"
-  $ns_repo_descr = "Zabbix Non-Supported EL${distrelease} ${architecture}"
-  yumrepo { $ns_repo_name :
-    ensure   => $ensure,
-    baseurl  => $ns_baseurl,
-    descr    => $ns_repo_descr,
-    enabled  => $enabled,
-    gpgcheck => true,
-    gpgkey   => $gpgkey,
+  if $repo_nonsupported_manage {
+    yumrepo { "zabbix-non-supported-${architecture}.el${distrelease}" :
+      ensure   => $repo_nonsupported_ensure,
+      enabled  => $repo_nonsupported_enabled,
+      baseurl  => $repo_nonsupported_baseurl,
+      descr    => "Zabbix Non-Supported EL${distrelease} ${architecture}",
+      gpgcheck => 1,
+      gpgkey   => "file://${gpg_key_path}",
+      require  => File[$gpg_key_path],
+    }
   }
 }

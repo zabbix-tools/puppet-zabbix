@@ -1,14 +1,9 @@
-# private service class. included by ::zabbix::server
-class zabbix::server::service (
-  $service = $::zabbix::params::server_service,
-) {
-  # The base class must be included first because parameter defaults depend on it
-  if ! defined(Class['zabbix::params']) {
-    fail('You must include the zabbix::params class before using the server service class')
-  }
-
-  service { $service :
-    ensure  => 'running',
-    enable  => true,
+# PRIVATE CLASS: do not use directly
+class zabbix::server::service {
+  if $::zabbix::server::service_manage {
+    service { $::zabbix::server::service_name :
+      ensure  => $::zabbix::server::service_ensure,
+      enable  => $::zabbix::server::service_enable,
+    }   
   }
 }

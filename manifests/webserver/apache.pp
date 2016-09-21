@@ -1,90 +1,58 @@
-class zabbix::webserver::apache (
-  $ensure = 'present',
-
-  $http_port = $::zabbix::params::http_port,
-  $docroot = $::zabbix::params::docroot,
-  $vhost_priority = false,
-
-  $user = $::zabbix::params::web_user,
-  $group = $::zabbix::params::web_group,
-  $mode  = $::zabbix::params::docroot_mode,
-
-  $timezone = $::zabbix::params::timezone,
-
-  $php_max_execution_time = 300,
-  $php_memory_limit = '128M',
-  $php_post_max_size = '16M',
-  $php_upload_max_filesize = '2M',
-  $php_max_input_time = 300,
-  $php_max_input_vars = 5000,
-) inherits zabbix::params {
-
-  case $ensure {
-    'present' : {
-      # prevent php muddling the managed apache config after it is installed
-      require ::zabbix::webserver::php
+# PRIVATE CLASS: do not use directly
+class zabbix::webserver::apache {
+  if $::zabbix::webserver::apache_manage {
+    class { '::apache' :
+      default_mods        => false,
+      default_confd_files => false,
+      default_vhost       => false,
+    }
       
-      # install apache
-      class { '::apache' :
-        default_mods        => false,
-        default_confd_files => false,
-        default_vhost       => false,
-      }
-      
-      # configure selinux    
-      selinux::boolean { 'httpd_can_network_connect_db' : ensure => 'on' }
-      selinux::boolean { 'httpd_can_connect_zabbix': ensure => 'on' }
-      selinux::boolean { 'httpd_can_connect_ldap' : ensure => 'on' }
+    selinux::boolean { 'httpd_can_network_connect_db' : ensure => 'on' }
+    selinux::boolean { 'httpd_can_connect_zabbix' :     ensure => 'on' }
+    selinux::boolean { 'httpd_can_connect_ldap' :       ensure => 'on' }
 
-      # Start a name server on the required port
-      apache::namevirtualhost { "*:${http_port}" : }
+    apache::namevirtualhost { "*:${::zabbix::webserver::apache_http_port}" : }
 
-      # install PHP
+    apache::vhost { 'zabbix':
+      port          => $::zabbix::webserver::apache_http_port,
+      docroot       => $::zabbix::webserver::docroot,
+      docroot_owner => $::zabbix::webserver::user,
+      docroot_group => $::zabbix::webserver::group,
+      docroot_mode  => '0755',
+      priority      => false,
+      directories   => [
+        {
+          path       => $::zabbix::webserver::docroot,
+          require    => 'all granted',
+          option     => [ 'FollowSymLinks' ],
+          php_values => [
+              "date.timezone                 ${::zabbix::webserver::php_timezone}",
+              "max_execution_time            ${::zabbix::webserver::php_max_execution_time}",
+              "max_input_time                ${::zabbix::webserver::php_max_input_time}",
+              "max_input_vars                ${::zabbix::webserver::php_max_input_vars}",
+              "memory_limit                  ${::zabbix::webserver::php_memory_limit}",
+              "post_max_size                 ${::zabbix::webserver::php_post_max_size}",
+              "upload_max_filesize           ${::zabbix::webserver::php_upload_max_filesize}",
+              "always_populate_raw_post_data -1",
+              "arg_separator.output          &",
+              "mbstring.func_overload        0",
+              "session.auto_start            0",
+          ],
+        },
+        { 'path' => "${::zabbix::webserver::docroot}/app",     'require' => 'all denied' },
+        { 'path' => "${::zabbix::webserver::docroot}/conf",    'require' => 'all denied' },
+        { 'path' => "${::zabbix::webserver::docroot}/include", 'require' => 'all denied' },
+        { 'path' => "${::zabbix::webserver::docroot}/local",   'require' => 'all denied' },
+      ],
+    }
+
+    if $::zabbix::webserver::php_package_manage {
       class { '::apache::mod::php' : }
 
-      # configure Zabbix VHost
-      apache::vhost { 'zabbix':
-        port          => $http_port,
-        docroot       => $docroot,
-        docroot_owner => $user,
-        docroot_group => $group,
-        docroot_mode  => $mode,
-        priority      => $vhost_priority,
-        directories   => [
-          {
-            path       => $docroot,
-            require    => 'all granted',
-            option     => [ 'FollowSymLinks' ],
-            php_values => [
-                "max_execution_time ${php_max_execution_time}",
-                "memory_limit ${php_memory_limit}",
-                "post_max_size ${php_post_max_size}",
-                "upload_max_filesize ${php_upload_max_filesize}",
-                "max_input_time ${php_max_input_time}",
-                "max_input_vars ${php_max_input_vars}",
-                "date.timezone ${timezone}",
-            ],
-          },
-          { 'path' => "${docroot}/conf",    'require'   => 'all denied' },
-          { 'path' => "${docroot}/include", 'require'   => 'all denied' },
-        ],
+      package { $::zabbix::webserver::php_package_name :
+        ensure => $::zabbix::webserver::php_package_ensure,
+        notify => Class['::apache::service'],
       }
-    }
-
-    'absent' : {
-      # Remove apache
-      package { [ 'httpd', 'httpd-tools' ] :
-        ensure => 'purged',
-      } ->
-
-      file { '/etc/httpd' :
-        ensure => 'absent',
-        force  => true,
-      }
-    }
-
-    default : {
-      fail("Unsupported 'ensure' field: ${ensure}")
     }
   }
 }

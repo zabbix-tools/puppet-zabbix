@@ -17,6 +17,7 @@ echo -e "$BULLET Installing $MOD_NAME dependencies..."
 puppet module install puppetlabs/stdlib
 puppet module install puppetlabs/postgresql
 puppet module install puppetlabs/apache
+puppet module install jfryman/selinux
 
 # Install this module by mapping /vagrant to /etc/puppet/modules/$MOD_NAME
 echo -e "$BULLET Installing $MOD_NAME..."
@@ -32,6 +33,10 @@ YAML
 # Apply this module
 echo -e "$BULLET Applying $MOD_NAME module..."
 puppet apply /vagrant/vagrant/manifest.pp
+
+# reset command:
+# yum remove -y zabbix-release zabbix-server zabbix-web zabbix-agent zabbix-get zabbix-sender httpd* php* postgresql* && rm -rf /etc/zabbix /etc/yum.repos.d/zabbix-* /var/lib/pgsql /etc/httpd
+
 script
 
 # Vagrant condiguration

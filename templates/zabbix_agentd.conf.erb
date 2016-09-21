@@ -1,4 +1,4 @@
-# This is a config file for the Zabbix agent daemon (Unix)
+# This is a config file for the Zabbix agent daemon
 # To get more information about Zabbix, visit http://www.zabbix.com
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -14,9 +14,24 @@
 # Mandatory: no
 # Default:
 # PidFile=/tmp/zabbix_agentd.pid
-PidFile=<%= @pid_file %>
-<% end -%>
 
+PidFile=<%= @pid_file %>
+
+<% end -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
+### Option: LogType
+#	Specifies where log messages are written to:
+#		system  - syslog
+#		file    - file specified with LogFile parameter
+#		console - standard output
+#
+# Mandatory: no
+# Default:
+# LogType=file
+
+LogType=<%= @log_type %>
+
+<% end -%>
 ### Option: LogFile
 #	Name of log file.
 #	If not set, syslog is used.
@@ -24,6 +39,7 @@ PidFile=<%= @pid_file %>
 # Mandatory: no
 # Default:
 # LogFile=
+
 LogFile=<%= @log_file %>
 
 ### Option: LogFileSize
@@ -34,6 +50,7 @@ LogFile=<%= @log_file %>
 # Range: 0-1024
 # Default:
 # LogFileSize=1
+
 LogFileSize=<%= @log_file_size %>
 
 ### Option: DebugLevel
@@ -48,6 +65,7 @@ LogFileSize=<%= @log_file_size %>
 # Range: 0-4
 # Default:
 # DebugLevel=3
+
 DebugLevel=<%= @debug_level %>
 
 ### Option: SourceIP
@@ -56,7 +74,7 @@ DebugLevel=<%= @debug_level %>
 # Mandatory: no
 # Default:
 # SourceIP=
-<% if @source_ip -%>
+<% if @source_ip %>
 SourceIP=<%= @source_ip %>
 <% end -%>
 
@@ -68,6 +86,7 @@ SourceIP=<%= @source_ip %>
 # Mandatory: no
 # Default:
 # EnableRemoteCommands=0
+
 EnableRemoteCommands=<%= @enable_remote_commands %>
 
 ### Option: LogRemoteCommands
@@ -78,6 +97,7 @@ EnableRemoteCommands=<%= @enable_remote_commands %>
 # Mandatory: no
 # Default:
 # LogRemoteCommands=0
+
 LogRemoteCommands=<%= @log_remote_commands %>
 
 ##### Passive checks related
@@ -90,6 +110,7 @@ LogRemoteCommands=<%= @log_remote_commands %>
 # Mandatory: no
 # Default:
 # Server=
+
 Server=<%= @servers.join(',') %>
 
 ### Option: ListenPort
@@ -99,6 +120,7 @@ Server=<%= @servers.join(',') %>
 # Range: 1024-32767
 # Default:
 # ListenPort=10050
+
 ListenPort=<%= @listen_port %>
 
 ### Option: ListenIP
@@ -108,6 +130,7 @@ ListenPort=<%= @listen_port %>
 # Mandatory: no
 # Default:
 # ListenIP=0.0.0.0
+
 ListenIP=<%= @listen_ip %>
 
 ### Option: StartAgents
@@ -118,6 +141,7 @@ ListenIP=<%= @listen_ip %>
 # Range: 0-100
 # Default:
 # StartAgents=3
+
 StartAgents=<%= @start_agents %>
 
 ##### Active checks related
@@ -133,6 +157,7 @@ StartAgents=<%= @start_agents %>
 # Mandatory: no
 # Default:
 # ServerActive=
+
 ServerActive=<%= @server_active.join(',') %>
 
 ### Option: Hostname
@@ -143,7 +168,7 @@ ServerActive=<%= @server_active.join(',') %>
 # Mandatory: no
 # Default:
 # Hostname=
-<% if @hostname -%>
+<% if @hostname && ! @hostname_item %>
 Hostname=<%= @hostname %>
 <% end -%>
 
@@ -154,10 +179,11 @@ Hostname=<%= @hostname %>
 # Mandatory: no
 # Default:
 # HostnameItem=system.hostname
-<% if @_hostname_item -%>
-HostnameItem=<%= @_hostname_item %>
+<% if @hostname_item %>
+HostnameItem=<%= @hostname_item %>
 <% end -%>
 
+<% if scope.function_versioncmp([@version, '2.2.0']) >= 0 -%>
 ### Option: HostMetadata
 #	Optional parameter that defines host metadata.
 #	Host metadata is used at host auto-registration process.
@@ -168,7 +194,7 @@ HostnameItem=<%= @_hostname_item %>
 # Range: 0-255 characters
 # Default:
 # HostMetadata=
-<% if @host_metadata -%>
+<% if @host_metadata %>
 HostMetadata=<%= @host_metadata %>
 <% end -%>
 
@@ -182,10 +208,10 @@ HostMetadata=<%= @host_metadata %>
 # Mandatory: no
 # Default:
 # HostMetadataItem=
-<% if @host_metadata_item -%>
+<% if @host_metadata_item %>
 HostMetadataItem=<%= @host_metadata_item %>
+<% end %>
 <% end -%>
-
 ### Option: RefreshActiveChecks
 #	How often list of active checks is refreshed, in seconds.
 #
@@ -193,6 +219,7 @@ HostMetadataItem=<%= @host_metadata_item %>
 # Range: 60-3600
 # Default:
 # RefreshActiveChecks=120
+
 RefreshActiveChecks=<%= @refresh_active_checks %>
 
 ### Option: BufferSend
@@ -202,6 +229,7 @@ RefreshActiveChecks=<%= @refresh_active_checks %>
 # Range: 1-3600
 # Default:
 # BufferSend=5
+
 BufferSend=<%= @buffer_send %>
 
 ### Option: BufferSize
@@ -212,6 +240,7 @@ BufferSend=<%= @buffer_send %>
 # Range: 2-65535
 # Default:
 # BufferSize=100
+
 BufferSize=<%= @buffer_size %>
 
 ### Option: MaxLinesPerSecond
@@ -224,6 +253,7 @@ BufferSize=<%= @buffer_size %>
 # Range: 1-1000
 # Default:
 # MaxLinesPerSecond=100
+
 MaxLinesPerSecond=<%= @max_lines_per_second %>
 
 ############ ADVANCED PARAMETERS #################
@@ -251,6 +281,7 @@ Alias=<%= a['alias'] %>:<%= a['key'] %>
 # Range: 1-30
 # Default:
 # Timeout=3
+
 Timeout=<%= @timeout %>
 
 <% if @operatingsystem != 'windows' -%>
@@ -263,9 +294,22 @@ Timeout=<%= @timeout %>
 # Mandatory: no
 # Default:
 # AllowRoot=0
-AllowRoot=<%= @allow_root %>
-<% end -%>
 
+AllowRoot=<%= @allow_root %>
+
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
+### Option: User
+#	Drop privileges to a specific, existing user on the system.
+#	Only has effect if run as 'root' and AllowRoot is disabled.
+#
+# Mandatory: no
+# Default:
+# User=zabbix
+<% if @drop_user %>
+User=<%= @drop_user %>
+<% end %>
+<% end -%>
+<% end %>
 ### Option: Include
 #	You may include individual files or all files in a directory in the configuration file.
 #	Installing Zabbix will create include directory in /usr/local/etc, unless modified during the compile time.
@@ -291,6 +335,7 @@ Include=<%= path %>
 # Range: 0-1
 # Default:
 # UnsafeUserParameters=0
+
 UnsafeUserParameters=<%= @unsafe_user_parameters %>
 
 ### Option: UserParameter
@@ -314,7 +359,7 @@ UserParameter=<%= up['key'] %>,<%= up['command'] %>
 # Mandatory: no
 # Default:
 # LoadModulePath=${libdir}/modules
-<% if @load_module_path -%>
+<% if @load_module_path %>
 LoadModulePath=<%= @load_module_path %>
 <% end -%>
 
@@ -329,4 +374,88 @@ LoadModulePath=<%= @load_module_path %>
 # LoadModule=
 <% @load_modules.each do |mod| -%>
 LoadModule=<%= mod %>
+<% end -%>
+
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
+####### TLS-RELATED PARAMETERS #######
+
+### Option: TLSConnect
+#	How the agent should connect to server or proxy. Used for active checks.
+#	Only one value can be specified:
+#		unencrypted - connect without encryption
+#		psk         - connect using TLS and a pre-shared key
+#		cert        - connect using TLS and a certificate
+#
+# Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+# Default:
+# TLSConnect=unencrypted
+
+### Option: TLSAccept
+#	What incoming connections to accept.
+#	Multiple values can be specified, separated by comma:
+#		unencrypted - accept connections without encryption
+#		psk         - accept connections secured with TLS and a pre-shared key
+#		cert        - accept connections secured with TLS and a certificate
+#
+# Mandatory: yes, if TLS certificate or PSK parameters are defined (even for 'unencrypted' connection)
+# Default:
+# TLSAccept=unencrypted
+
+### Option: TLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for
+#	peer certificate verification.
+#
+# Mandatory: no
+# Default:
+# TLSCAFile=
+
+### Option: TLSCRLFile
+#	Full pathname of a file containing revoked certificates.
+#
+# Mandatory: no
+# Default:
+# TLSCRLFile=
+
+### Option: TLSServerCertIssuer
+#      Allowed server certificate issuer.
+#
+# Mandatory: no
+# Default:
+# TLSServerCertIssuer=
+
+### Option: TLSServerCertSubject
+#      Allowed server certificate subject.
+#
+# Mandatory: no
+# Default:
+# TLSServerCertSubject=
+
+### Option: TLSCertFile
+#	Full pathname of a file containing the agent certificate or certificate chain.
+#
+# Mandatory: no
+# Default:
+# TLSCertFile=
+
+### Option: TLSKeyFile
+#	Full pathname of a file containing the agent private key.
+#
+# Mandatory: no
+# Default:
+# TLSKeyFile=
+
+### Option: TLSPSKIdentity
+#	Unique, case sensitive string used to identify the pre-shared key.
+#
+# Mandatory: no
+# Default:
+# TLSPSKIdentity=
+
+### Option: TLSPSKFile
+#	Full pathname of a file containing the pre-shared key.
+#
+# Mandatory: no
+# Default:
+# TLSPSKFile=
+
 <% end -%>

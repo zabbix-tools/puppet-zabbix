@@ -42,7 +42,7 @@ ListenPort=<%= @listen_port %>
 SourceIP=<%= @source_ip %>
 <% end -%>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ### Option: LogType
 #	Specifies where log messages are written to:
 #		system  - syslog
@@ -260,7 +260,7 @@ StartHTTPPollers=<%= @start_http_pollers %>
 
 StartTimers=<%= @start_timers %>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ### Option: StartEscalators
 #	Number of pre-forked instances of escalators.
 #
@@ -477,7 +477,7 @@ StartDBSyncers=<%= @start_db_syncers %>
 
 HistoryCacheSize=<%= @history_cache_size %>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ### Option: HistoryIndexCacheSize
 #	Size of history index cache, in bytes.
 #	Shared memory size for indexing history cache.
@@ -716,7 +716,7 @@ ProxyDataFrequency=<%= @proxy_data_frequency %>
 
 AllowRoot=<%= @allow_root %>
 
-<% if scope.function_versioncmp([@version, '2.4.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '2.4.0']) >= 0 -%>
 ### Option: User
 #	Drop privileges to a specific, existing user on the system.
 #	Only has effect if run as 'root' and AllowRoot is disabled.
@@ -743,7 +743,7 @@ User=<%= @drop_user %>
 Include=<%= path %>
 <% end -%>
 
-<% if scope.function_versioncmp([@version, '2.4.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '2.4.0']) >= 0 -%>
 ### Option: SSLCertLocation
 #	Location of SSL client certificates.
 #	This parameter is used only in web monitoring.
@@ -803,7 +803,7 @@ LoadModulesPath=<%= @load_modules_path %>
 LoadModule=<%= mod %>
 <% end -%>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ####### TLS-RELATED PARAMETERS #######
 
 ### Option: TLSCAFile

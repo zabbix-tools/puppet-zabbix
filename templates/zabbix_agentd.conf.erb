@@ -18,7 +18,7 @@
 PidFile=<%= @pid_file %>
 
 <% end -%>
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ### Option: LogType
 #	Specifies where log messages are written to:
 #		system  - syslog
@@ -183,7 +183,7 @@ Hostname=<%= @hostname %>
 HostnameItem=<%= @hostname_item %>
 <% end -%>
 
-<% if scope.function_versioncmp([@version, '2.2.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '2.2.0']) >= 0 -%>
 ### Option: HostMetadata
 #	Optional parameter that defines host metadata.
 #	Host metadata is used at host auto-registration process.
@@ -297,7 +297,7 @@ Timeout=<%= @timeout %>
 
 AllowRoot=<%= @allow_root %>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ### Option: User
 #	Drop privileges to a specific, existing user on the system.
 #	Only has effect if run as 'root' and AllowRoot is disabled.
@@ -376,7 +376,7 @@ LoadModulePath=<%= @load_module_path %>
 LoadModule=<%= mod %>
 <% end -%>
 
-<% if scope.function_versioncmp([@version, '3.0.0']) > 0 -%>
+<% if scope.function_versioncmp([@version, '3.0.0']) >= 0 -%>
 ####### TLS-RELATED PARAMETERS #######
 
 ### Option: TLSConnect

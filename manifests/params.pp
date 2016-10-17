@@ -39,6 +39,13 @@ class zabbix::params inherits zabbix::globals {
   }
 
   #
+  # zabbix user account parameters
+  #
+  $user_name  = pick($user_name, 'zabbix')
+  $user_group = pick($user_group, $user_name)
+  $user_home  = pick($user_home, '/var/lib/zabbix')
+
+  #
   # zabbix_get parameters
   #
   $get_package_name   = 'zabbix-get'

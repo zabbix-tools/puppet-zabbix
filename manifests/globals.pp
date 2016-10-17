@@ -23,6 +23,10 @@ class zabbix::globals (
 
   $server_host = undef,
   $server_port = undef,
+
+  $user_name  = undef,
+  $user_group = undef,
+  $user_home  = undef,
 ) {
 
 }

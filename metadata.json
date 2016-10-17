@@ -1,6 +1,6 @@
 {
   "name": "cavaliercoder-zabbix",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Ryan Armstrong <ryan@cavaliercoder.com>",
   "license": "MIT",
   "summary": "Puppet module for managing Zabbix resources",
@@ -15,9 +15,9 @@
     { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7.0" ] }
   ],
   "dependencies": [
-    { "name": "puppetlabs/stdlib",     "version_requirement": ">=4.12.0" },
-    { "name": "puppetlabs/postgresql", "version_requirement": ">=4.8.0" },
-    { "name": "puppetlabs/apache",     "version_requirement": ">=1.10.0" },
+    { "name": "puppetlabs/stdlib",     "version_requirement": ">=4.8.0" },
+    { "name": "puppetlabs/postgresql", "version_requirement": ">=4.4.0" },
+    { "name": "puppetlabs/apache",     "version_requirement": ">=1.6.0" },
     { "name": "jfryman/selinux",       "version_requirement": ">=0.4.0" }
   ]
 }

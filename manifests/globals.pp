@@ -13,7 +13,7 @@ class zabbix::globals (
   $repo_nonsupported_baseurl = undef,
 
   $database_manage   = undef,
-  $database_driver   = undef,  
+  $database_driver   = undef,
   $database_host     = undef,
   $database_schema   = undef,
   $database_name     = undef,

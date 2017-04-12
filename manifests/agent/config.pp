@@ -1,5 +1,5 @@
 # PRIVATE CLASS: do not use directly
-class zabbix::agent::config {
+class zabbix::agent::config inherits zabbix::agent {
   if $::zabbix::agent::config_manage {
     file { $::zabbix::agent::config_path :
       ensure  => 'file',

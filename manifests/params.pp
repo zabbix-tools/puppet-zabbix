@@ -1,6 +1,6 @@
 # private computed global parameters
 class zabbix::params inherits zabbix::globals {
-  $version       = pick($version, '3.2.0')
+  $version       = pick($version, '3.2.4')
   $version_parts = split($version, '[.]')
   $ver_major     = $version_parts[0]
   $ver_minor     = $version_parts[1]
@@ -171,23 +171,20 @@ class zabbix::params inherits zabbix::globals {
   case $::operatingsystem {
     'windows': {
       $agent_install_root = 'C:/Program Files/Zabbix'
-
       $agent_service_name = 'Zabbix Agent'
-
       $agent_bin_dir = $::architecture ? {
         'x64'   => "${agent_install_root}/bin/win64",
         default => "${agent_install_root}/bin/win32",
       }
-
       $agent_config_path     = "${agent_install_root}/conf/zabbix_agentd.win.conf"
       $agent_config_includes = []
       $agent_config_log_dir  = "${agent_install_root}/logs"
       $agent_config_log_file = "${agent_log_dir}/zabbix_agentd.log"
     }
-    
+
     default: {
       $agent_service_name    = 'zabbix-agent'
-
+      $agent_bin_dir         = undef
       $agent_config_path     = '/etc/zabbix/zabbix_agentd.conf'
       $agent_config_owner    = 'root'
       $agent_config_group    = $agent_group

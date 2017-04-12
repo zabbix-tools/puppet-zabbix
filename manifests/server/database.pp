@@ -19,9 +19,9 @@ class zabbix::server::database {
 
         # configure database if not configured
         exec { 'setup zabbix database' :
-          command     => $setup_bin,
-          unless      => "${setup_bin} check",
-          path        => '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin',
+          command => $setup_bin,
+          unless  => "${setup_bin} check",
+          path    => '/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin',
         }
 
         # install ~/.pgpass credentials

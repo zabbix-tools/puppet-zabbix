@@ -1,5 +1,5 @@
 # PRIVATE CLASS: do not use directly
-class zabbix::server::database {
+class zabbix::server::database inherits zabbix::server {
   if $::zabbix::server::database_manage {
     case $::zabbix::server::database_driver {
       'pgsql' : {

@@ -3,7 +3,7 @@ class zabbix::webserver (
 
   $docroot           = $::zabbix::params::web_docroot,
   $user              = $::zabbix::params::web_user,
-  $group             = $::zabbix::params::web_group,  
+  $group             = $::zabbix::params::web_group,
 
   $repo_manage       = $::zabbix::params::repo_manage,
 

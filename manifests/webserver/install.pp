@@ -13,7 +13,11 @@ class zabbix::webserver::install {
 
     # allow httpd to connect to the zabbix server
     if $::selinux_enforced {
-      selinux::boolean { 'httpd_can_connect_zabbix' : 
+      $bools = [
+        'httpd_can_connect_zabbix',
+        'httpd_can_network_connect_db',
+      ]
+      selinux::boolean { $bools :
         ensure  => 'on',
         require => Package[$::zabbix::webserver::package_name],
       }

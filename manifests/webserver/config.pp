@@ -1,5 +1,5 @@
 # PRIVATE CLASS: do not use directly
-class zabbix::webserver::config {
+class zabbix::webserver::config inherits zabbix::webserver {
   $database_driver = $::zabbix::webserver::database_driver ? {
     'pgsql' => 'POSTGRESQL',
     'mysql' => 'MYSQL',

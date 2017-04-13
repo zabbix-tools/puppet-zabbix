@@ -22,6 +22,7 @@ class zabbix::server (
   $service_enable    = $::zabbix::params::server_service_enable,
 
   $user              = $::zabbix::params::server_user,
+  $user_home         = $::zabbix::params::server_user_home,
   $group             = $::zabbix::params::server_group,
 
   $config_manage     = $::zabbix::params::server_config_manage,

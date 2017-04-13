@@ -60,10 +60,11 @@ class zabbix::params inherits zabbix::globals {
   #
   # Server parameters
   #
-  $server_host  = pick($server_host, '127.0.0.1')
-  $server_port  = pick($server_port, 10051)
-  $server_user  = 'zabbix'
-  $server_group = 'zabbix'
+  $server_host      = pick($server_host, '127.0.0.1')
+  $server_port      = pick($server_port, 10051)
+  $server_user      = $user_name
+  $server_user_home = $user_home
+  $server_group     = $user_group
 
   $server_package_manage = true
   $server_package_name   = "zabbix-server-${database_driver}"

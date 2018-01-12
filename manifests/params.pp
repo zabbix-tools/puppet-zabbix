@@ -1,6 +1,6 @@
 # private computed global parameters
 class zabbix::params inherits zabbix::globals {
-  $version       = pick($version, '3.2.4')
+  $version       = pick($version, '3.4.5')
   $version_parts = split($version, '[.]')
   $ver_major     = $version_parts[0]
   $ver_minor     = $version_parts[1]
@@ -35,6 +35,10 @@ class zabbix::params inherits zabbix::globals {
     'pgsql' : {
       $database_schema = pick($database_schema, 'public')
       $database_port   = pick($database_port, 5432)
+    }
+
+    default : {
+      fail("Unsupported database_driver: ${database_driver}")
     }
   }
 
@@ -92,10 +96,12 @@ class zabbix::params inherits zabbix::globals {
   $server_config_drop_user                 = undef
   $server_config_enable_snmp_bulk_requests = 1
   $server_config_external_scripts_path     = '/usr/lib/zabbix/externalscripts'
-  $server_config_fping6_location           = '/usr/sbin/fping6'
   $server_config_fping_location            = '/usr/sbin/fping'
+  $server_config_fping6_location           = '/usr/sbin/fping6'
   $server_config_history_cache_size        = '8M'
   $server_config_history_index_cache_size  = '4M'
+  $server_config_history_storage_types     = [ 'uint', 'dbl', 'str', 'log', 'text']
+  $server_config_history_storage_url       = undef
   $server_config_history_text_cache_size   = '16M'
   $server_config_housekeeping_frequency    = 1
   $server_config_java_gateway              = undef
@@ -106,7 +112,7 @@ class zabbix::params inherits zabbix::globals {
   $server_config_load_modules_path         = undef
   $server_config_log_file                  = '/var/log/zabbix/zabbix_server.log'
   $server_config_log_file_size             = 1
-  $server_config_log_slow_queries          = 0
+  $server_config_log_slow_queries          = 3000
   $server_config_log_type                  = 'file'
   $server_config_max_housekeeper_delete    = 500
   $server_config_node_id                   = 0
@@ -117,11 +123,13 @@ class zabbix::params inherits zabbix::globals {
   $server_config_proxy_data_frequency      = 1
   $server_config_sender_frequency          = 30
   $server_config_snmp_trapper_file         = '/var/log/snmptt/snmptt.log'
+  $server_config_socket_dir                = '/var/run/zabbix'
   $server_config_source_ip                 = undef
   $server_config_ssh_key_location          = undef
   $server_config_ssl_ca_location           = undef
   $server_config_ssl_cert_location         = '${datadir}/zabbix/ssl/certs'
   $server_config_ssl_key_location          = '${datadir}/zabbix/ssh/keys'
+  $server_config_start_alerters            = 3
   $server_config_start_db_syncers          = 4
   $server_config_start_discoverers         = 1
   $server_config_start_escalators          = 1
@@ -131,6 +139,7 @@ class zabbix::params inherits zabbix::globals {
   $server_config_start_pingers             = 1
   $server_config_start_pollers             = 5
   $server_config_start_pollers_unreachable = 1
+  $server_config_start_preprocessors       = 3
   $server_config_start_proxy_pollers       = 1
   $server_config_start_snmp_trapper        = 0
   $server_config_start_timers              = 1

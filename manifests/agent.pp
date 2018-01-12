@@ -49,9 +49,9 @@ class zabbix::agent (
   $unsafe_user_parameters = $::zabbix::params::agent_config_unsafe_user_parameters,
   $user_parameters        = $::zabbix::params::agent_config_user_parameters,
 ) inherits zabbix::params {
-  anchor { '::zabbix::agent::start' : } ->
-  class { '::zabbix::agent::install' : } ->
-  class { '::zabbix::agent::config' : } ->
-  class { '::zabbix::agent::service' : } ->
-  anchor { '::zabbix::agent::end' : }
+  anchor { '::zabbix::agent::start' : }
+  -> class { '::zabbix::agent::install' : }
+  -> class { '::zabbix::agent::config' : }
+  -> class { '::zabbix::agent::service' : }
+  -> anchor { '::zabbix::agent::end' : }
 }

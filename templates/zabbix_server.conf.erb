@@ -1,6 +1,5 @@
-# This is a configuration file for Zabbix Server process
-# To get more information about Zabbix,
-# visit http://www.zabbix.com
+# This is a configuration file for Zabbix server daemon
+# To get more information about Zabbix, visit http://www.zabbix.com
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # !!! This file is managed by Puppet  !!!
@@ -79,14 +78,15 @@ LogFileSize=<%= @log_file_size %>
 
 ### Option: DebugLevel
 #	Specifies debug level
-#	0 - no debug
+#	0 - basic information about starting and stopping of Zabbix processes
 #	1 - critical information
 #	2 - error information
 #	3 - warnings
 #	4 - for debugging (produces lots of information)
+#	5 - extended debugging (produces even more information)
 #
 # Mandatory: no
-# Range: 0-4
+# Range: 0-5
 # Default:
 # DebugLevel=3
 
@@ -101,6 +101,19 @@ DebugLevel=<%= @debug_level %>
 
 PidFile=<%= @pid_file %>
 
+
+<% if scope.function_versioncmp([@version, '3.4.0']) >= 0 -%>
+### Option: SocketDir
+#     IPC socket directory.
+#       Directory to store IPC sockets used by internal Zabbix services.
+#
+# Mandatory: no
+# Default:
+# SocketDir=/tmp
+
+SocketDir=<%= @socket_dir %>
+
+<% end -%>
 ### Option: DBHost
 #	Database host name.
 #	If set to localhost, socket is used for MySQL.
@@ -123,7 +136,7 @@ DBHost=<%= @database_host %>
 DBName=<%= @database_name %>
 
 ### Option: DBSchema
-#	Schema name. Used for IBM DB2.
+#	Schema name. Used for IBM DB2 and PostgreSQL.
 #
 # Mandatory: no
 # Default:
@@ -173,6 +186,30 @@ DBSocket=<%= @database_socket %>
 DBPort=<%= @database_port %>
 <% end -%>
 
+<% if scope.function_versioncmp([@version, '3.4.5']) >= 0 -%>
+### Option: HistoryStorageURL
+#     History storage HTTP[S] URL.
+#
+# Mandatory: no
+# Default:
+# HistoryStorageURL=
+
+<% if @history_storage_url %>
+HistoryStorageURL=<%= @history_storage_url %>
+<% end -%>
+
+### Option: HistoryStorageTypes
+#     Comma separated list of value types to be sent to the history storage.
+#
+# Mandatory: no
+# Default:
+# HistoryStorageTypes=uint,dbl,str,log,text
+
+<% if @history_storage_url %>
+HistoryStorageTypes=<%= @history_storage_types %>
+<% end -%>
+
+<% end -%>
 ############ ADVANCED PARAMETERS ################
 
 ### Option: StartPollers
@@ -187,6 +224,7 @@ StartPollers=<%= @start_pollers %>
 
 ### Option: StartIPMIPollers
 #	Number of pre-forked instances of IPMI pollers.
+# The IPMI manager process is automatically started when at least one IPMI poller is started.
 #
 # Mandatory: no
 # Range: 0-1000
@@ -195,8 +233,23 @@ StartPollers=<%= @start_pollers %>
 
 StartIPMIPollers=<%= @start_ipmi_pollers %>
 
+<% if scope.function_versioncmp([@version, '3.4.0']) >= 0 -%>
+### Option: StartPreprocessors
+#       Number of pre-forked instances of preprocessing workers.
+#       The preprocessing manager process is automatically started when preprocessor worker is started.
+#
+# Mandatory: no
+# Range: 1-1000
+# Default:
+# StartPreprocessors=3
+
+StartPreprocessors=<%= @start_preprocessors %>
+
+<% end -%>
 ### Option: StartPollersUnreachable
-#	Number of pre-forked instances of pollers for unreachable hosts (including IPMI).
+# Number of pre-forked instances of pollers for unreachable hosts (including IPMI and Java).
+# At least one poller for unreachable hosts must be running if regular, IPMI or Java pollers
+# are started.
 #
 # Mandatory: no
 # Range: 0-1000
@@ -272,6 +325,20 @@ StartTimers=<%= @start_timers %>
 StartEscalators=<%= @start_escalators %>
 
 <% end %>
+
+<% if scope.function_versioncmp([@version, '3.4.0']) >= 0 -%>
+### Option: StartAlerters
+#       Number of pre-forked instances of alerters.
+#       Alerters send the notifications created by action operations.
+#
+# Mandatory: no
+# Range: 0-100
+# Default:
+# StartAlerters=3
+
+StartAlerters=<%= @start_alerters %>
+
+<% end -%>
 ### Option: JavaGateway
 #	IP address (or hostname) of Zabbix Java gateway.
 #	Only required if Java pollers are started.
@@ -425,6 +492,7 @@ HousekeepingFrequency=<%= @housekeeping_frequency %>
 
 MaxHousekeeperDelete=<%= @max_housekeeper_delete %>
 
+<% if scope.function_versioncmp([@version, '3.4.0']) < 0 %>%
 ### Option: SenderFrequency
 #	How often Zabbix will try to send unsent alerts (in seconds).
 #
@@ -435,6 +503,7 @@ MaxHousekeeperDelete=<%= @max_housekeeper_delete %>
 
 SenderFrequency=<%= @sender_frequency %>
 
+<% end-%>
 ### Option: CacheSize
 #	Size of configuration cache, in bytes.
 #	Shared memory size for storing host, item and trigger data.
@@ -659,7 +728,7 @@ SSHKeyLocation=<%= @ssh_key_location %>
 # Mandatory: no
 # Range: 1-3600000
 # Default:
-# LogSlowQueries=0
+# LogSlowQueries=3000
 
 LogSlowQueries=<%= @log_slow_queries %>
 
